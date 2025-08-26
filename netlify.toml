@@ -1,0 +1,6 @@
+# netlify.toml
+[build]
+  # No build command needed for static HTML/CSS/JS
+  command = ""
+  # Publish the root directory
+  publish = "."

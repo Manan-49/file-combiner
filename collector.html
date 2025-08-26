@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Combiner</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Replace with favicon asset -->
+    <!-- <link rel="icon" href="favicon.ico"> -->
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 File Combiner</h1>
+            <p>Drag, drop, select, and combine your code files into a single markdown file</p>
+        </div>
+
+        <div class="main-content">
+            <div class="drop-zone" id="dropZone" role="region" aria-label="File drop zone">
+                <h3>📁 Drop Your Folder Here</h3>
+                <p>Drag and drop a folder containing your code files</p>
+                <input type="file" id="folderInput" webkitdirectory multiple style="display: none;" aria-label="Select folder">
+            </div>
+
+            <div class="stats hidden" id="stats" role="region" aria-label="File statistics">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalFiles">0</div>
+                    <div class="stat-label">Total Files</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="selectedFiles">0</div>
+                    <div class="stat-label">Selected</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalSize">0 KB</div>
+                    <div class="stat-label">Total Size</div>
+                </div>
+            </div>
+
+            <div class="file-list hidden" id="fileList" role="region" aria-label="File list">
+                <h3>📋 Select Files to Combine</h3>
+                <div class="controls">
+                    <button class="btn btn-secondary" onclick="selectAll()" aria-label="Select all files">Select All</button>
+                    <button class="btn btn-secondary" onclick="selectNone()" aria-label="Select no files">Select None</button>
+                    <button class="btn btn-secondary" onclick="selectCodeFiles()" aria-label="Select code files only">Select Code Files</button>
+                    <button class="btn btn-secondary" onclick="filterFiles('components')" aria-label="Filter components">🧩 Components</button>
+                    <button class="btn btn-secondary" onclick="filterFiles('styles')" aria-label="Filter styles">🎨 Styles</button>
+                    <button class="btn btn-secondary" onclick="filterFiles('config')" aria-label="Filter configuration files">⚙️ Config</button>
+                    <button class="btn btn-secondary" onclick="filterFiles('all')" aria-label="Show all files">📂 Show All</button>
+                </div>
+                <div id="fileItems" role="list"></div>
+            </div>
+
+            <div class="controls hidden" id="actionControls">
+                <button class="btn btn-primary" onclick="combineFiles()" aria-label="Combine selected files">🔗 Combine Selected Files</button>
+                <button class="btn btn-secondary" onclick="downloadMarkdown()" aria-label="Download markdown file">💾 Download .md File</button>
+                <button class="btn btn-secondary" onclick="reset()" aria-label="Reset application">🔄 Reset</button>
+                <label class="btn btn-secondary" style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="useCodeBlocks" checked style="margin: 0;" aria-label="Use code blocks in output">
+                    📝 Use Code Blocks
+                </label>
+                <button class="btn btn-secondary" onclick="addPromptTemplate()" aria-label="Add AI prompt template">🤖 Add AI Prompt</button>
+                <button class="btn btn-secondary" onclick="addProjectContext()" aria-label="Add project context">📊 Add Context</button>
+                <button class="btn btn-secondary" onclick="toggleMinifyFiles()" aria-label="Toggle minify output">📦 Minify Output</button>
+            </div>
+
+            <div class="output-section hidden" id="outputSection" role="region" aria-label="Generated content">
+                <h3>📄 Generated Content for ChatGPT</h3>
+                <div class="controls" style="margin-bottom: 15px;">
+                    <button class="btn btn-primary" onclick="copyToClipboard()" aria-label="Copy to clipboard">📋 Copy to Clipboard</button>
+                    <button class="btn btn-secondary" onclick="addCustomPrompt()" aria-label="Add custom prompt">✏️ Add Custom Prompt</button>
+                    <button class="btn btn-secondary" onclick="showTokenCount()" aria-label="Show token count">🔢 Token Count</button>
+                </div>
+                <textarea class="output-textarea" id="outputTextarea" placeholder="Your combined files will appear here..." aria-label="Combined file output"></textarea>
+                <div id="tokenCounter" class="stat-item" style="margin-top: 15px; display: none;">
+                    <div class="stat-number" id="tokenCount">0</div>
+                    <div class="stat-label">Estimated Tokens</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
