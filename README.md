@@ -1,7 +1,7 @@
 # File Combiner
 
-![File Combiner Demo]()  
-<!-- Replace with demo screenshot or GIF --><img width="1305" height="479" alt="Screenshot 2025-08-26 210118" src="https://github.com/user-attachments/assets/38fea2d3-49be-45aa-b22c-d2194e9b16b3" />
+![File Combiner Demo]
+
 <img width="1305" height="479" alt="Screenshot 2025-08-26 210118" src="https://github.com/user-attachments/assets/12715ddd-65a5-4de3-b302-264c9fa3f3e0" />
 
 A lightweight, responsive web application that allows users to drag and drop a folder of code files, select specific files, and combine them into a single markdown file with optional AI prompt templates for tools like ChatGPT. Built with HTML, CSS, JavaScript, and GSAP for smooth animations, it’s designed for developers to streamline code sharing and analysis. The app is fully accessible, mobile-friendly, and optimized for deployment on Netlify.
