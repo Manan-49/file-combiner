@@ -1,6 +1,6 @@
 # File Combiner
 
-![File Combiner Demo]
+[File Combiner Demo]
 
 <img width="1305" height="479" alt="Screenshot 2025-08-26 210118" src="https://github.com/user-attachments/assets/12715ddd-65a5-4de3-b302-264c9fa3f3e0" />
 
