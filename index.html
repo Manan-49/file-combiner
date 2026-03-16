@@ -91,6 +91,7 @@
                 <label class="btn btn-secondary checkbox-btn"><input type="checkbox" id="includeTree"> 🌳 Tree</label>
                 <button class="btn btn-secondary" onclick="addPromptTemplate()">🤖 AI Prompt</button>
                 <button class="btn btn-secondary" onclick="addProjectContext()">📊 Context</button>
+                <button class="btn btn-secondary" onclick="openPathSelector()">📋 Paste Paths</button>
                 <button class="btn btn-secondary" id="minifyBtn" onclick="toggleMinifyFiles()">📦 Minify</button>
             </div>
 
@@ -142,6 +143,27 @@
             <div class="modal-body-buttons" id="promptButtons"></div>
         </div>
     </div>
+
+<!-- Path Selector Modal -->
+<div class="modal-overlay hidden" id="pathModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>📋 Paste File Paths</h3>
+            <button class="modal-close" onclick="closePathModal()">&times;</button>
+        </div>
+        <p class="path-modal-desc">Paste file paths (one per line) to auto-select matching files from your loaded folder.</p>
+        <textarea class="path-textarea" id="pathTextarea" placeholder="app/api/checkout/route.ts
+app/api/cart/route.ts
+app/api/orders/route.ts
+app/api/products/[id]/route.ts"></textarea>
+        <div class="path-modal-actions">
+            <button class="btn btn-primary" onclick="matchAndSelectPaths()">✅ Match & Select</button>
+            <button class="btn btn-secondary" onclick="matchAndSelectPaths(true)">➕ Add to Selection</button>
+            <button class="btn btn-secondary" onclick="closePathModal()">Cancel</button>
+        </div>
+        <div class="path-results hidden" id="pathResults"></div>
+    </div>
+</div>
 
     <div id="toastContainer" class="toast-container"></div>
     <script src="script.js"></script>

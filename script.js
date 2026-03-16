@@ -609,6 +609,87 @@ function escapeHtml(s) {
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ── Path Selector ──
+function openPathSelector() {
+    if (!allFiles.length) { showToast('Load a folder first', 'error'); return; }
+    document.getElementById('pathTextarea').value = '';
+    document.getElementById('pathResults').classList.add('hidden');
+    document.getElementById('pathModal').classList.remove('hidden');
+}
+
+function closePathModal() {
+    document.getElementById('pathModal').classList.add('hidden');
+}
+
+function matchAndSelectPaths(addToExisting) {
+    const raw = document.getElementById('pathTextarea').value.trim();
+    if (!raw) { showToast('Paste some file paths first', 'error'); return; }
+
+    const inputPaths = raw.split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0)
+        .map(line => line.replace(/\\/g, '/'));
+
+    if (!addToExisting) selectNone();
+
+    let matched = 0;
+    let unmatched = [];
+
+    inputPaths.forEach(inputPath => {
+        let found = false;
+        allFiles.forEach((file, i) => {
+            const filePath = (file.webkitRelativePath || file.name).replace(/\\/g, '/');
+            // Match if file path ends with the input path, or exact match, or contains it
+            if (
+                filePath === inputPath ||
+                filePath.endsWith('/' + inputPath) ||
+                filePath.endsWith(inputPath)
+            ) {
+                selectedFiles.add(i);
+                document.getElementById('file-' + i).checked = true;
+                found = true;
+            }
+        });
+        if (found) matched++;
+        else unmatched.push(inputPath);
+    });
+
+    updateStats();
+
+    // Show results
+    const resultsDiv = document.getElementById('pathResults');
+    let html = '<div class="path-summary">';
+    html += '<span class="path-matched">✅ ' + matched + ' matched</span>';
+    html += '<span class="path-unmatched">❌ ' + unmatched.length + ' not found</span>';
+    html += '</div>';
+
+    if (unmatched.length > 0) {
+        html += '<details class="path-details"><summary>Show unmatched paths</summary><ul>';
+        unmatched.forEach(p => {
+            html += '<li><code>' + escapeHtml(p) + '</code></li>';
+        });
+        html += '</ul></details>';
+    }
+
+    resultsDiv.innerHTML = html;
+    resultsDiv.classList.remove('hidden');
+
+    showToast('Selected ' + matched + ' of ' + inputPaths.length + ' files');
+}
+
+// Close on overlay click & Escape
+document.addEventListener('DOMContentLoaded', () => {
+    const pathModal = document.getElementById('pathModal');
+    if (pathModal) {
+        pathModal.addEventListener('click', e => {
+            if (e.target === e.currentTarget) closePathModal();
+        });
+    }
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closePathModal();
+    });
+});
+
 function showToast(message, type) {
     type = type || 'success';
     const container = document.getElementById('toastContainer');
