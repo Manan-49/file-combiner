@@ -11,7 +11,7 @@
         <header class="header">
             <div class="header-row">
                 <h1>🚀 File Combiner <span class="version-badge">v2</span></h1>
-                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button>
+                <button type="button" class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle dark mode">☀️</button>
             </div>
             <p>Drag, drop, select, and combine your code files into a single markdown file</p>
         </header>
@@ -21,20 +21,20 @@
                 <h3>📁 Drop Your Folder Here</h3>
                 <p>Drag and drop a folder containing your code files</p>
                 <p class="drop-subtitle">or click to browse</p>
-                <input type="file" id="folderInput" webkitdirectory multiple style="display:none;" aria-label="Select folder">
+                <input type="file" id="folderInput" directory webkitdirectory multiple style="display:none;" aria-label="Select folder">
             </section>
 
             <section class="settings-panel hidden" id="settingsPanel" role="region" aria-label="Exclusion settings">
                 <h3>🚫 Exclude Patterns</h3>
                 <div class="exclude-presets">
-                    <button class="btn btn-secondary btn-sm preset-btn" onclick="applyPreset('none',this)">None</button>
-                    <button class="btn btn-secondary btn-sm preset-btn" onclick="applyPreset('minimal',this)">Minimal</button>
-                    <button class="btn btn-secondary btn-sm preset-btn active-preset" onclick="applyPreset('standard',this)">Standard</button>
-                    <button class="btn btn-secondary btn-sm preset-btn" onclick="applyPreset('aggressive',this)">Aggressive</button>
+                    <button type="button" class="btn btn-secondary btn-sm preset-btn" onclick="applyPreset('none',this)">None</button>
+                    <button type="button" class="btn btn-secondary btn-sm preset-btn" onclick="applyPreset('minimal',this)">Minimal</button>
+                    <button type="button" class="btn btn-secondary btn-sm preset-btn active-preset" onclick="applyPreset('standard',this)">Standard</button>
+                    <button type="button" class="btn btn-secondary btn-sm preset-btn" onclick="applyPreset('aggressive',this)">Aggressive</button>
                 </div>
                 <div class="exclude-input-row">
                     <input type="text" id="excludeInput" placeholder="Add pattern (e.g. node_modules, *.log)" class="exclude-input" aria-label="Add exclude pattern">
-                    <button class="btn btn-primary btn-sm" onclick="addExcludePattern()">+ Add</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="addExcludePattern()">+ Add</button>
                 </div>
                 <div class="exclude-tags" id="excludeTags"></div>
                 <div class="exclude-info" id="excludeInfo"></div>
@@ -71,35 +71,35 @@
             <section class="file-list hidden" id="fileList" role="region" aria-label="File list">
                 <h3>📋 Select Files to Combine</h3>
                 <div class="controls">
-                    <button class="btn btn-secondary" onclick="selectAll()">Select All</button>
-                    <button class="btn btn-secondary" onclick="selectNone()">Select None</button>
-                    <button class="btn btn-secondary" onclick="selectCodeFiles()">Code Files</button>
-                    <button class="btn btn-secondary" onclick="filterFiles('components')">🧩 Components</button>
-                    <button class="btn btn-secondary" onclick="filterFiles('styles')">🎨 Styles</button>
-                    <button class="btn btn-secondary" onclick="filterFiles('config')">⚙️ Config</button>
-                    <button class="btn btn-secondary" onclick="filterFiles('all')">📂 All</button>
+                    <button type="button" class="btn btn-secondary" onclick="selectAll()">Select All</button>
+                    <button type="button" class="btn btn-secondary" onclick="selectNone()">Select None</button>
+                    <button type="button" class="btn btn-secondary" onclick="selectCodeFiles()">Code Files</button>
+                    <button type="button" class="btn btn-secondary" onclick="filterFiles('components')">🧩 Components</button>
+                    <button type="button" class="btn btn-secondary" onclick="filterFiles('styles')">🎨 Styles</button>
+                    <button type="button" class="btn btn-secondary" onclick="filterFiles('config')">⚙️ Config</button>
+                    <button type="button" class="btn btn-secondary" onclick="filterFiles('all')">📂 All</button>
                 </div>
                 <div id="fileItems" role="list"></div>
             </section>
 
             <div class="controls hidden" id="actionControls">
-                <button class="btn btn-primary" onclick="combineFiles()">🔗 Combine Files</button>
-                <button class="btn btn-secondary" onclick="downloadMarkdown()">💾 .md</button>
-                <button class="btn btn-secondary" onclick="downloadText()">📄 .txt</button>
-                <button class="btn btn-secondary" onclick="reset()">🔄 Reset</button>
+                <button type="button" class="btn btn-primary" onclick="combineFiles()">🔗 Combine Files</button>
+                <button type="button" class="btn btn-secondary" onclick="downloadMarkdown()">💾 .md</button>
+                <button type="button" class="btn btn-secondary" onclick="downloadText()">📄 .txt</button>
+                <button type="button" class="btn btn-secondary" onclick="reset()">🔄 Reset</button>
                 <label class="btn btn-secondary checkbox-btn"><input type="checkbox" id="useCodeBlocks" checked> 📝 Code Blocks</label>
                 <label class="btn btn-secondary checkbox-btn"><input type="checkbox" id="includeTree"> 🌳 Tree</label>
-                <button class="btn btn-secondary" onclick="addPromptTemplate()">🤖 AI Prompt</button>
-                <button class="btn btn-secondary" onclick="addProjectContext()">📊 Context</button>
-                <button class="btn btn-secondary" onclick="openPathSelector()">📋 Paste Paths</button>
-                <button class="btn btn-secondary" id="minifyBtn" onclick="toggleMinifyFiles()">📦 Minify</button>
+                <button type="button" class="btn btn-secondary" onclick="addPromptTemplate()">🤖 AI Prompt</button>
+                <button type="button" class="btn btn-secondary" onclick="addProjectContext()">📊 Context</button>
+                <button type="button" class="btn btn-secondary" onclick="openPathSelector()">📋 Paste Paths</button>
+                <button type="button" class="btn btn-secondary" id="minifyBtn" onclick="toggleMinifyFiles()">📦 Minify</button>
             </div>
 
             <section class="output-section hidden" id="outputSection" role="region" aria-label="Combined output">
                 <h3>📄 Combined Output</h3>
                 <div class="controls" style="margin-bottom:15px;">
-                    <button class="btn btn-primary" onclick="copyToClipboard()">📋 Copy</button>
-                    <button class="btn btn-secondary" onclick="addCustomPrompt()">✏️ Custom Prompt</button>
+                    <button type="button" class="btn btn-primary" onclick="copyToClipboard()">📋 Copy</button>
+                    <button type="button" class="btn btn-secondary" onclick="addCustomPrompt()">✏️ Custom Prompt</button>
                     <select id="tokenLimitSelect" onchange="updateTokenDisplay()" class="token-select" aria-label="Token limit">
                         <option value="0">No Limit</option>
                         <option value="4096">GPT-3.5 (4K)</option>
@@ -128,7 +128,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="previewFileName">Preview</h3>
-                <button class="modal-close" onclick="closePreviewModal()">&times;</button>
+                <button type="button" class="modal-close" onclick="closePreviewModal()">&times;</button>
             </div>
             <pre class="modal-body" id="previewContent"></pre>
         </div>
@@ -138,32 +138,32 @@
         <div class="modal-content modal-sm">
             <div class="modal-header">
                 <h3>🤖 AI Prompt Templates</h3>
-                <button class="modal-close" onclick="closePromptModal()">&times;</button>
+                <button type="button" class="modal-close" onclick="closePromptModal()">&times;</button>
             </div>
             <div class="modal-body-buttons" id="promptButtons"></div>
         </div>
     </div>
 
-<!-- Path Selector Modal -->
-<div class="modal-overlay hidden" id="pathModal" role="dialog" aria-modal="true">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>📋 Paste File Paths</h3>
-            <button class="modal-close" onclick="closePathModal()">&times;</button>
-        </div>
-        <p class="path-modal-desc">Paste file paths (one per line) to auto-select matching files from your loaded folder.</p>
-        <textarea class="path-textarea" id="pathTextarea" placeholder="app/api/checkout/route.ts
+    <!-- Path Selector Modal -->
+    <div class="modal-overlay hidden" id="pathModal" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📋 Paste File Paths</h3>
+                <button type="button" class="modal-close" onclick="closePathModal()">&times;</button>
+            </div>
+            <p class="path-modal-desc">Paste file paths (one per line) to auto-select matching files from your loaded folder.</p>
+            <textarea class="path-textarea" id="pathTextarea" placeholder="app/api/checkout/route.ts
 app/api/cart/route.ts
 app/api/orders/route.ts
 app/api/products/[id]/route.ts"></textarea>
-        <div class="path-modal-actions">
-            <button class="btn btn-primary" onclick="matchAndSelectPaths()">✅ Match & Select</button>
-            <button class="btn btn-secondary" onclick="matchAndSelectPaths(true)">➕ Add to Selection</button>
-            <button class="btn btn-secondary" onclick="closePathModal()">Cancel</button>
+            <div class="path-modal-actions">
+                <button type="button" class="btn btn-primary" onclick="matchAndSelectPaths()">✅ Match & Select</button>
+                <button type="button" class="btn btn-secondary" onclick="matchAndSelectPaths(true)">➕ Add to Selection</button>
+                <button type="button" class="btn btn-secondary" onclick="closePathModal()">Cancel</button>
+            </div>
+            <div class="path-results hidden" id="pathResults"></div>
         </div>
-        <div class="path-results hidden" id="pathResults"></div>
     </div>
-</div>
 
     <div id="toastContainer" class="toast-container"></div>
     <script src="script.js"></script>

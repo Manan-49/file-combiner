@@ -89,38 +89,76 @@ let minifyOutput = false;
 document.addEventListener('DOMContentLoaded', () => {
     loadSettings();
     initDropZone();
-    document.getElementById('previewModal').addEventListener('click', e => {
-        if (e.target === e.currentTarget) closePreviewModal();
-    });
-    document.getElementById('promptModal').addEventListener('click', e => {
-        if (e.target === e.currentTarget) closePromptModal();
-    });
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') { closePreviewModal(); closePromptModal(); }
-    });
+    initModals();
+    initExcludeTagsDelegation();
+    
+    // Initial theme emoji fix (already handled in loadSettings)
+    console.log('%c🚀 File Combiner v2 initialized successfully', 'color:#667eea;font-weight:bold');
 });
 
 function initDropZone() {
     const dz = document.getElementById('dropZone');
     const fi = document.getElementById('folderInput');
+    
     dz.addEventListener('click', () => fi.click());
     dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
     dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
     dz.addEventListener('drop', e => {
-        e.preventDefault(); dz.classList.remove('dragover');
-        const files = Array.from(e.dataTransfer.files);
-        if (files.length) handleFiles(files);
+        e.preventDefault();
+        dz.classList.remove('dragover');
+        handleFiles(Array.from(e.dataTransfer.files));
     });
+    
     fi.addEventListener('change', e => handleFiles(Array.from(e.target.files)));
+    
+    // Enter key support for exclude input
     document.getElementById('excludeInput').addEventListener('keydown', e => {
         if (e.key === 'Enter') addExcludePattern();
+    });
+}
+
+function initModals() {
+    // Close modals when clicking overlay
+    const modals = ['previewModal', 'promptModal', 'pathModal'];
+    modals.forEach(id => {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.addEventListener('click', e => {
+                if (e.target === modal) {
+                    if (id === 'previewModal') closePreviewModal();
+                    else if (id === 'promptModal') closePromptModal();
+                    else if (id === 'pathModal') closePathModal();
+                }
+            });
+        }
+    });
+
+    // Global Escape key support
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            closePreviewModal();
+            closePromptModal();
+            closePathModal();
+        }
+    });
+}
+
+function initExcludeTagsDelegation() {
+    const tagsContainer = document.getElementById('excludeTags');
+    tagsContainer.addEventListener('click', e => {
+        if (e.target.tagName === 'BUTTON' && e.target.closest('.exclude-tag')) {
+            const pattern = e.target.dataset.pattern;
+            if (pattern) removeExcludePattern(pattern);
+        }
     });
 }
 
 // ── Theme ──
 function toggleTheme() {
     const html = document.documentElement;
-    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    const current = html.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    
     html.setAttribute('data-theme', next);
     document.getElementById('themeToggle').textContent = next === 'dark' ? '☀️' : '🌙';
     saveSettings();
@@ -132,16 +170,20 @@ function saveSettings() {
         localStorage.setItem('fc-exclude', JSON.stringify([...excludePatterns]));
         localStorage.setItem('fc-theme', document.documentElement.getAttribute('data-theme'));
         localStorage.setItem('fc-maxSize', document.getElementById('maxFileSize').value);
-    } catch(e) { /* ignore */ }
+    } catch(e) {}
 }
 
 function loadSettings() {
     try {
-        const saved = localStorage.getItem('fc-exclude');
-        excludePatterns = saved ? new Set(JSON.parse(saved)) : new Set(excludePresets.standard);
+        const savedExclude = localStorage.getItem('fc-exclude');
+        excludePatterns = savedExclude 
+            ? new Set(JSON.parse(savedExclude)) 
+            : new Set(excludePresets.standard);
+
         const theme = localStorage.getItem('fc-theme') || 'light';
         document.documentElement.setAttribute('data-theme', theme);
         document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+
         const maxSize = localStorage.getItem('fc-maxSize');
         if (maxSize) document.getElementById('maxFileSize').value = maxSize;
     } catch(e) {
@@ -155,14 +197,16 @@ function handleFiles(files) {
     allRawFiles = files.filter(f => f.size > 0);
     reprocessFiles();
     showSections();
-    showToast('Loaded ' + allRawFiles.length + ' files');
+    showToast(`Loaded ${allRawFiles.length} files`);
 }
 
 function reprocessFiles() {
     if (!allRawFiles.length) return;
+    
     const maxSize = parseInt(document.getElementById('maxFileSize').value) || 0;
     allFiles = [];
     excludedFiles = [];
+
     allRawFiles.forEach(file => {
         const path = file.webkitRelativePath || file.name;
         const reason = getExclusionReason(path, file.size, maxSize);
@@ -172,6 +216,7 @@ function reprocessFiles() {
             allFiles.push(file);
         }
     });
+
     selectedFiles.clear();
     displayFiles();
     updateStats();
@@ -180,20 +225,27 @@ function reprocessFiles() {
 }
 
 function getExclusionReason(filePath, fileSize, maxSize) {
-    if (maxSize > 0 && fileSize > maxSize) return 'Size > ' + formatFileSize(maxSize);
+    if (maxSize > 0 && fileSize > maxSize) {
+        return `Size > ${formatFileSize(maxSize)}`;
+    }
+
     const segments = filePath.split('/');
     for (const pattern of excludePatterns) {
         if (pattern.includes('*')) {
-            const re = new RegExp('^' + pattern.replace(/\./g, '\\.').replace(/\*/g, '.*') + '$', 'i');
-            if (segments.some(s => re.test(s))) return 'Pattern: ' + pattern;
+            const regexStr = '^' + pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\\\*/g, '.*');
+            const re = new RegExp(regexStr, 'i');
+            if (segments.some(s => re.test(s))) return `Pattern: ${pattern}`;
         } else {
-            if (segments.some(s => s === pattern)) return 'Pattern: ' + pattern;
+            if (segments.some(s => s === pattern)) return `Pattern: ${pattern}`;
         }
     }
     return null;
 }
 
-function onMaxSizeChange() { saveSettings(); reprocessFiles(); }
+function onMaxSizeChange() {
+    saveSettings();
+    reprocessFiles();
+}
 
 // ── Exclude Patterns ──
 function addExcludePattern() {
@@ -225,28 +277,47 @@ function applyPreset(name, btn) {
 }
 
 function renderExcludeTags() {
-    const c = document.getElementById('excludeTags');
-    if (!excludePatterns.size) { c.innerHTML = '<span class="no-patterns">No exclude patterns</span>'; return; }
-    c.innerHTML = [...excludePatterns].map(p =>
-        '<span class="exclude-tag">' + escapeHtml(p) +
-        '<button onclick="removeExcludePattern(\'' + p.replace(/'/g, "\\'") + '\')" title="Remove">&times;</button></span>'
-    ).join('');
+    const container = document.getElementById('excludeTags');
+    if (!excludePatterns.size) {
+        container.innerHTML = '<span class="no-patterns">No exclude patterns</span>';
+        return;
+    }
+
+    container.innerHTML = [...excludePatterns].map(p => `
+        <span class="exclude-tag">
+            ${escapeHtml(p)}
+            <button data-pattern="${escapeHtml(p)}" title="Remove">&times;</button>
+        </span>
+    `).join('');
 }
 
 function updateExcludeInfo() {
     const el = document.getElementById('excludeInfo');
-    if (!excludedFiles.length) { el.innerHTML = ''; return; }
-    const items = excludedFiles.slice(0, 100).map(f =>
-        '<li><code>' + escapeHtml(f.path) + '</code> — ' + escapeHtml(f.reason) + '</li>'
+    if (!excludedFiles.length) {
+        el.innerHTML = '';
+        return;
+    }
+
+    const items = excludedFiles.slice(0, 100).map(f => 
+        `<li><code>${escapeHtml(f.path)}</code> — ${escapeHtml(f.reason)}</li>`
     ).join('');
-    const more = excludedFiles.length > 100 ? '<li>...and ' + (excludedFiles.length - 100) + ' more</li>' : '';
-    el.innerHTML = '<details><summary>🚫 ' + excludedFiles.length + ' file(s) excluded</summary><ul>' + items + more + '</ul></details>';
+    const more = excludedFiles.length > 100 
+        ? `<li>...and ${excludedFiles.length - 100} more</li>` 
+        : '';
+
+    el.innerHTML = `
+        <details>
+            <summary>🚫 ${excludedFiles.length} file(s) excluded</summary>
+            <ul>${items}${more}</ul>
+        </details>
+    `;
 }
 
-// ── Display ──
+// ── Display Files ──
 function displayFiles() {
     const container = document.getElementById('fileItems');
     container.innerHTML = '';
+
     allFiles.forEach((file, i) => {
         const div = document.createElement('div');
         div.className = 'file-item';
@@ -254,43 +325,48 @@ function displayFiles() {
 
         const cb = document.createElement('input');
         cb.type = 'checkbox';
-        cb.id = 'file-' + i;
+        cb.id = `file-${i}`;
         cb.addEventListener('change', () => toggleFileSelection(i));
 
         const label = document.createElement('label');
-        label.htmlFor = 'file-' + i;
+        label.htmlFor = `file-${i}`;
         label.className = 'file-path';
         label.textContent = file.webkitRelativePath || file.name;
 
-        const size = document.createElement('span');
-        size.className = 'file-size';
-        size.textContent = formatFileSize(file.size);
+        const sizeEl = document.createElement('span');
+        sizeEl.className = 'file-size';
+        sizeEl.textContent = formatFileSize(file.size);
 
-        const pbtn = document.createElement('button');
-        pbtn.className = 'preview-btn';
-        pbtn.textContent = '👁️';
-        pbtn.title = 'Preview';
-        pbtn.onclick = e => { e.stopPropagation(); previewFile(i); };
+        const previewBtn = document.createElement('button');
+        previewBtn.className = 'preview-btn';
+        previewBtn.textContent = '👁️';
+        previewBtn.title = 'Preview';
+        previewBtn.onclick = e => {
+            e.stopPropagation();
+            previewFile(i);
+        };
 
-        div.appendChild(cb);
-        div.appendChild(label);
-        div.appendChild(size);
-        div.appendChild(pbtn);
+        div.append(cb, label, sizeEl, previewBtn);
+        
+        // Click anywhere on row (except checkbox/preview) to toggle
         div.addEventListener('click', e => {
-            if (e.target !== cb && e.target !== pbtn) { cb.checked = !cb.checked; toggleFileSelection(i); }
+            if (e.target !== cb && e.target !== previewBtn) {
+                cb.checked = !cb.checked;
+                toggleFileSelection(i);
+            }
         });
+
         container.appendChild(div);
     });
 }
 
 function showSections() {
-    ['settingsPanel','stats','languageBreakdown','searchWrapper','fileList','actionControls'].forEach(id =>
-        document.getElementById(id).classList.remove('hidden')
-    );
+    const sections = ['settingsPanel','stats','languageBreakdown','searchWrapper','fileList','actionControls'];
+    sections.forEach(id => document.getElementById(id).classList.remove('hidden'));
 }
 
 function updateStats() {
-    const totalSize = [...selectedFiles].reduce((s, i) => s + allFiles[i].size, 0);
+    const totalSize = [...selectedFiles].reduce((sum, i) => sum + allFiles[i].size, 0);
     document.getElementById('totalFiles').textContent = allFiles.length;
     document.getElementById('selectedFiles').textContent = selectedFiles.size;
     document.getElementById('totalSize').textContent = formatFileSize(totalSize);
@@ -305,32 +381,50 @@ function renderLanguageBreakdown() {
         const lang = languageMap[ext] || ext || 'other';
         counts[lang] = (counts[lang] || 0) + 1;
     });
-    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 12);
+
+    const sorted = Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 12);
+
     const total = allFiles.length || 1;
-    const colors = ['#667eea','#764ba2','#f093fb','#4facfe','#43e97b','#fa709a','#fee140','#a18cd1','#fbc2eb','#ff9a9e','#84fab0','#fccb90'];
+    const colors = ['#667eea','#764ba2','#f093fb','#4facfe','#43e97b','#fa709a','#fee140','#a18cd1','#fbc2eb','#ff9a9e'];
+
     document.getElementById('languageBars').innerHTML = sorted.map(([lang, count], i) => {
         const pct = ((count / total) * 100).toFixed(1);
-        return '<div class="lang-row"><span class="lang-name">' + lang +
-            '</span><div class="lang-track"><div class="lang-fill" style="width:' + pct + '%;background:' + colors[i % colors.length] +
-            '"></div></div><span class="lang-count">' + count + ' (' + pct + '%)</span></div>';
+        return `
+            <div class="lang-row">
+                <span class="lang-name">${lang}</span>
+                <div class="lang-track">
+                    <div class="lang-fill" style="width:${pct}%;background:${colors[i % colors.length]}"></div>
+                </div>
+                <span class="lang-count">${count} (${pct}%)</span>
+            </div>`;
     }).join('');
 }
 
 // ── Selection ──
 function toggleFileSelection(i) {
-    const cb = document.getElementById('file-' + i);
-    if (cb.checked) selectedFiles.add(i); else selectedFiles.delete(i);
+    const cb = document.getElementById(`file-${i}`);
+    if (cb.checked) selectedFiles.add(i);
+    else selectedFiles.delete(i);
     updateStats();
 }
 
 function selectAll() {
-    allFiles.forEach((_, i) => { selectedFiles.add(i); document.getElementById('file-' + i).checked = true; });
+    selectedFiles = new Set(allFiles.map((_, i) => i));
+    allFiles.forEach((_, i) => {
+        const cb = document.getElementById(`file-${i}`);
+        if (cb) cb.checked = true;
+    });
     updateStats();
 }
 
 function selectNone() {
     selectedFiles.clear();
-    allFiles.forEach((_, i) => { document.getElementById('file-' + i).checked = false; });
+    allFiles.forEach((_, i) => {
+        const cb = document.getElementById(`file-${i}`);
+        if (cb) cb.checked = false;
+    });
     updateStats();
 }
 
@@ -339,7 +433,8 @@ function selectCodeFiles() {
     allFiles.forEach((f, i) => {
         if (codeExtensions.has(getFileExtension(f.name))) {
             selectedFiles.add(i);
-            document.getElementById('file-' + i).checked = true;
+            const cb = document.getElementById(`file-${i}`);
+            if (cb) cb.checked = true;
         }
     });
     updateStats();
@@ -347,38 +442,51 @@ function selectCodeFiles() {
 
 // ── Search & Filter ──
 function searchFiles() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
     document.querySelectorAll('.file-item').forEach(item => {
-        const path = item.querySelector('.file-path').textContent.toLowerCase();
-        item.style.display = path.includes(q) ? 'flex' : 'none';
+        const pathEl = item.querySelector('.file-path');
+        const path = pathEl ? pathEl.textContent.toLowerCase() : '';
+        item.style.display = path.includes(query) ? 'flex' : 'none';
     });
 }
 
 function filterFiles(type) {
     document.querySelectorAll('.file-item').forEach((item, i) => {
         if (i >= allFiles.length) return;
-        const path = (allFiles[i].webkitRelativePath || allFiles[i].name).toLowerCase();
-        const ext = getFileExtension(allFiles[i].name);
+        const file = allFiles[i];
+        const path = (file.webkitRelativePath || file.name).toLowerCase();
+        const ext = getFileExtension(file.name);
         let show = true;
-        switch (type) {
-            case 'components': show = path.includes('component') || ['jsx','tsx','vue','svelte'].includes(ext); break;
-            case 'styles': show = ['css','scss','sass','less','styl'].includes(ext); break;
-            case 'config': show = path.includes('config') || ['json','yaml','yml','toml','ini','env'].includes(ext); break;
+
+        if (type === 'components') {
+            show = path.includes('component') || ['jsx','tsx','vue','svelte'].includes(ext);
+        } else if (type === 'styles') {
+            show = ['css','scss','sass','less','styl'].includes(ext);
+        } else if (type === 'config') {
+            show = path.includes('config') || ['json','yaml','yml','toml','ini','env'].includes(ext);
+        } else if (type === 'all') {
+            show = true;
         }
+
         item.style.display = show ? 'flex' : 'none';
     });
 }
 
-// ── Combine ──
+// ── Combine Files ──
 async function combineFiles() {
-    if (!selectedFiles.size) { showToast('Select at least one file', 'error'); return; }
+    if (!selectedFiles.size) {
+        showToast('Please select at least one file', 'error');
+        return;
+    }
+
     const useCodeBlocks = document.getElementById('useCodeBlocks').checked;
     const includeTree = document.getElementById('includeTree').checked;
-    const fence = '`' + '`' + '`';
+    const fence = '```';
+
     combinedContent = '';
 
     if (includeTree) {
-        combinedContent += '## 📁 Folder Structure\n\n' + fence + '\n' + generateTree() + fence + '\n\n---\n\n';
+        combinedContent += `## 📁 Folder Structure\n\n${fence}\n${generateTree()}${fence}\n\n---\n\n`;
     }
 
     const sorted = [...selectedFiles].sort((a, b) => {
@@ -397,124 +505,164 @@ async function combineFiles() {
             }
             if (useCodeBlocks) {
                 const lang = getLanguageFromExtension(getFileExtension(file.name));
-                combinedContent += '### ' + path + '\n' + fence + lang + '\n' + content + '\n' + fence + '\n\n';
+                combinedContent += `### ${path}\n${fence}${lang}\n${content}\n${fence}\n\n`;
             } else {
-                combinedContent += '### ' + path + '\n' + content + '\n\n';
+                combinedContent += `### ${path}\n${content}\n\n`;
             }
         } catch (err) {
-            combinedContent += '### ' + path + '\n' + fence + '\n[Error reading file]\n' + fence + '\n\n';
+            combinedContent += `### ${path}\n${fence}\n[Error reading file]\n${fence}\n\n`;
         }
     }
 
     document.getElementById('outputTextarea').value = combinedContent;
     document.getElementById('outputSection').classList.remove('hidden');
     showTokenCount();
-    showToast('Combined ' + sorted.length + ' files');
-    document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    showToast(`Combined ${sorted.length} files`);
+    document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
 }
 
 function readFileContent(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = e => resolve(e.target.result);
-        reader.onerror = e => reject(e.target.error);
+        reader.onerror = () => reject(new Error('Failed to read file'));
         reader.readAsText(file);
     });
 }
 
 function generateTree() {
-    const paths = [...selectedFiles].sort().map(i => allFiles[i].webkitRelativePath || allFiles[i].name);
+    const paths = [...selectedFiles].map(i => allFiles[i].webkitRelativePath || allFiles[i].name);
     const tree = {};
+
     paths.forEach(p => {
-        let cur = tree;
-        p.split('/').forEach(part => { if (!cur[part]) cur[part] = {}; cur = cur[part]; });
-    });
-    function render(node, prefix) {
-        const keys = Object.keys(node);
-        let out = '';
-        keys.forEach((key, i) => {
-            const last = i === keys.length - 1;
-            const hasKids = Object.keys(node[key]).length > 0;
-            out += prefix + (last ? '└── ' : '├── ') + key + '\n';
-            if (hasKids) out += render(node[key], prefix + (last ? '    ' : '│   '));
+        let current = tree;
+        p.split('/').forEach(part => {
+            if (!current[part]) current[part] = {};
+            current = current[part];
         });
-        return out;
+    });
+
+    function render(node, prefix = '') {
+        const keys = Object.keys(node);
+        let output = '';
+        keys.forEach((key, i) => {
+            const isLast = i === keys.length - 1;
+            const hasChildren = Object.keys(node[key]).length > 0;
+            output += `${prefix}${isLast ? '└── ' : '├── '}${key}\n`;
+            if (hasChildren) {
+                output += render(node[key], prefix + (isLast ? '    ' : '│   '));
+            }
+        });
+        return output;
     }
-    return render(tree, '');
+
+    return render(tree);
 }
 
 function minifyCode(content) {
-    return content.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')
-        .replace(/^\s+/gm, '').replace(/\n\s*\n/g, '\n').trim();
+    return content
+        .replace(/\/\*[\s\S]*?\*\//g, '')           // Remove block comments
+        .replace(/\/\/.*$/gm, '')                   // Remove line comments
+        .replace(/^\s+/gm, '')                      // Trim leading whitespace
+        .replace(/\n\s*\n/g, '\n')                  // Remove empty lines
+        .trim();
 }
 
 // ── Output Actions ──
 async function copyToClipboard() {
     const text = document.getElementById('outputTextarea').value;
-    if (!text) { showToast('Nothing to copy', 'error'); return; }
+    if (!text) {
+        showToast('Nothing to copy', 'error');
+        return;
+    }
+
     try {
         await navigator.clipboard.writeText(text);
-        showToast('Copied to clipboard!');
-    } catch (e) {
+        showToast('✅ Copied to clipboard!');
+    } catch (err) {
+        // Fallback for older browsers
         const ta = document.getElementById('outputTextarea');
-        ta.select(); document.execCommand('copy');
-        showToast('Copied to clipboard!');
+        ta.select();
+        document.execCommand('copy');
+        showToast('✅ Copied to clipboard!');
     }
 }
 
 function downloadFile(content, filename, type) {
-    if (!content) { showToast('Combine files first', 'error'); return; }
+    if (!content) {
+        showToast('Combine files first', 'error');
+        return;
+    }
     const blob = new Blob([content], { type });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = filename;
-    document.body.appendChild(a); a.click();
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    showToast('Downloaded ' + filename);
+    showToast(`Downloaded ${filename}`);
 }
 
-function downloadMarkdown() { downloadFile(combinedContent, 'combined-files.md', 'text/markdown'); }
-function downloadText() { downloadFile(combinedContent, 'combined-files.txt', 'text/plain'); }
+function downloadMarkdown() {
+    downloadFile(combinedContent, 'combined-files.md', 'text/markdown');
+}
+
+function downloadText() {
+    downloadFile(combinedContent, 'combined-files.txt', 'text/plain');
+}
 
 // ── Prompts ──
 function addPromptTemplate() {
-    const c = document.getElementById('promptButtons');
-    c.innerHTML = Object.entries(promptTemplates).map(([key, tmpl]) =>
-        '<button class="btn btn-secondary" style="width:100%;margin-bottom:8px;text-align:left;" onclick="applyPromptTemplate(\'' + key + '\');closePromptModal()">' +
-        tmpl.split(':')[0] + '</button>'
-    ).join('');
+    const container = document.getElementById('promptButtons');
+    container.innerHTML = Object.entries(promptTemplates).map(([key, template]) => `
+        <button class="btn btn-secondary" style="width:100%;margin-bottom:8px;text-align:left;" 
+                onclick="applyPromptTemplate('${key}');closePromptModal()">
+            ${template.split(':')[0]}
+        </button>
+    `).join('');
     document.getElementById('promptModal').classList.remove('hidden');
 }
 
-function closePromptModal() { document.getElementById('promptModal').classList.add('hidden'); }
+function closePromptModal() {
+    document.getElementById('promptModal').classList.add('hidden');
+}
 
 function applyPromptTemplate(key) {
-    const ta = document.getElementById('outputTextarea');
-    ta.value = promptTemplates[key] + ta.value;
-    combinedContent = ta.value;
+    const textarea = document.getElementById('outputTextarea');
+    textarea.value = promptTemplates[key] + textarea.value;
+    combinedContent = textarea.value;
     updateTokenDisplay();
 }
 
 function addProjectContext() {
-    const ctx = '## 📁 PROJECT CONTEXT\n**Framework**: [Specify]\n**Purpose**: [Brief description]\n**Current Issue**: [Describe]\n**Goal**: [What you want]\n\n---\n\n';
-    const ta = document.getElementById('outputTextarea');
-    ta.value = ctx + ta.value;
-    combinedContent = ta.value;
-    showToast('Context template added');
+    const context = `## 📁 PROJECT CONTEXT
+**Framework**: [Specify]
+**Purpose**: [Brief description]
+**Current Issue**: [Describe]
+**Goal**: [What you want]
+
+---
+
+`;
+    const textarea = document.getElementById('outputTextarea');
+    textarea.value = context + textarea.value;
+    combinedContent = textarea.value;
+    showToast('Project context template added');
 }
 
 function addCustomPrompt() {
-    const p = prompt('Enter your custom prompt:');
-    if (p) {
-        const ta = document.getElementById('outputTextarea');
-        ta.value = '**CUSTOM REQUEST**: ' + p + '\n\n' + ta.value;
-        combinedContent = ta.value;
+    const promptText = prompt('Enter your custom prompt:');
+    if (promptText) {
+        const textarea = document.getElementById('outputTextarea');
+        textarea.value = `**CUSTOM REQUEST**: ${promptText}\n\n` + textarea.value;
+        combinedContent = textarea.value;
         showToast('Custom prompt added');
     }
 }
 
-// ── Tokens ──
+// ── Token Counter ──
 function showTokenCount() {
     const content = document.getElementById('outputTextarea').value;
     if (!content) return;
@@ -526,15 +674,18 @@ function updateTokenDisplay() {
     const content = document.getElementById('outputTextarea').value;
     const tokens = estimateTokens(content);
     const limit = parseInt(document.getElementById('tokenLimitSelect').value) || 0;
+
     document.getElementById('tokenCount').textContent = tokens.toLocaleString();
     document.getElementById('tokenLimit').textContent = limit > 0 ? limit.toLocaleString() : '∞';
+
     const bar = document.getElementById('tokenProgress');
     const warning = document.getElementById('tokenWarning');
+
     if (limit > 0) {
         const pct = Math.min((tokens / limit) * 100, 100);
-        bar.style.width = pct + '%';
-        bar.className = 'token-bar-fill ' + (pct > 90 ? 'danger' : pct > 75 ? 'warning' : 'safe');
-        if (tokens > limit) warning.classList.remove('hidden'); else warning.classList.add('hidden');
+        bar.style.width = `${pct}%`;
+        bar.className = `token-bar-fill ${pct > 90 ? 'danger' : pct > 75 ? 'warning' : 'safe'}`;
+        warning.classList.toggle('hidden', tokens <= limit);
     } else {
         bar.style.width = '0%';
         bar.className = 'token-bar-fill safe';
@@ -547,18 +698,24 @@ function estimateTokens(text) {
 }
 
 // ── Preview ──
-async function previewFile(i) {
-    const file = allFiles[i];
+async function previewFile(index) {
+    const file = allFiles[index];
     try {
         const content = await readFileContent(file);
         document.getElementById('previewFileName').textContent = file.webkitRelativePath || file.name;
-        document.getElementById('previewContent').textContent =
-            content.length > 50000 ? content.substring(0, 50000) + '\n\n... [truncated]' : content;
+        document.getElementById('previewContent').textContent = 
+            content.length > 50000 
+                ? content.substring(0, 50000) + '\n\n... [truncated for preview]' 
+                : content;
         document.getElementById('previewModal').classList.remove('hidden');
-    } catch (e) { showToast('Cannot preview this file', 'error'); }
+    } catch (e) {
+        showToast('Cannot preview this file', 'error');
+    }
 }
 
-function closePreviewModal() { document.getElementById('previewModal').classList.add('hidden'); }
+function closePreviewModal() {
+    document.getElementById('previewModal').classList.add('hidden');
+}
 
 // ── Minify Toggle ──
 function toggleMinifyFiles() {
@@ -570,8 +727,13 @@ function toggleMinifyFiles() {
 
 // ── Reset ──
 function reset() {
-    allRawFiles = []; allFiles = []; excludedFiles = [];
-    selectedFiles.clear(); combinedContent = ''; minifyOutput = false;
+    allRawFiles = [];
+    allFiles = [];
+    excludedFiles = [];
+    selectedFiles.clear();
+    combinedContent = '';
+    minifyOutput = false;
+
     document.getElementById('folderInput').value = '';
     document.getElementById('outputTextarea').value = '';
     document.getElementById('fileItems').innerHTML = '';
@@ -581,9 +743,10 @@ function reset() {
     document.getElementById('minifyBtn').textContent = '📦 Minify';
     document.getElementById('minifyBtn').classList.remove('active-toggle');
     document.getElementById('tokenCounter').style.display = 'none';
-    ['settingsPanel','stats','languageBreakdown','searchWrapper','fileList','actionControls','outputSection'].forEach(id =>
-        document.getElementById(id).classList.add('hidden')
-    );
+
+    ['settingsPanel','stats','languageBreakdown','searchWrapper','fileList','actionControls','outputSection']
+        .forEach(id => document.getElementById(id).classList.add('hidden'));
+
     showToast('Reset complete');
 }
 
@@ -596,22 +759,33 @@ function getFileExtension(name) {
     return parts.length > 1 ? parts.pop().toLowerCase() : '';
 }
 
-function getLanguageFromExtension(ext) { return languageMap[ext] || ext; }
+function getLanguageFromExtension(ext) {
+    return languageMap[ext] || ext;
+}
 
 function formatFileSize(bytes) {
     if (bytes === 0) return '0 B';
-    const k = 1024, sizes = ['B','KB','MB','GB'];
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
 
-function escapeHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 // ── Path Selector ──
 function openPathSelector() {
-    if (!allFiles.length) { showToast('Load a folder first', 'error'); return; }
+    if (!allFiles.length) {
+        showToast('Load a folder first', 'error');
+        return;
+    }
     document.getElementById('pathTextarea').value = '';
     document.getElementById('pathResults').classList.add('hidden');
     document.getElementById('pathModal').classList.remove('hidden');
@@ -621,13 +795,16 @@ function closePathModal() {
     document.getElementById('pathModal').classList.add('hidden');
 }
 
-function matchAndSelectPaths(addToExisting) {
-    const raw = document.getElementById('pathTextarea').value.trim();
-    if (!raw) { showToast('Paste some file paths first', 'error'); return; }
+function matchAndSelectPaths(addToExisting = false) {
+    const rawText = document.getElementById('pathTextarea').value.trim();
+    if (!rawText) {
+        showToast('Paste some file paths first', 'error');
+        return;
+    }
 
-    const inputPaths = raw.split('\n')
+    const inputPaths = rawText.split('\n')
         .map(line => line.trim())
-        .filter(line => line.length > 0)
+        .filter(Boolean)
         .map(line => line.replace(/\\/g, '/'));
 
     if (!addToExisting) selectNone();
@@ -639,14 +816,14 @@ function matchAndSelectPaths(addToExisting) {
         let found = false;
         allFiles.forEach((file, i) => {
             const filePath = (file.webkitRelativePath || file.name).replace(/\\/g, '/');
-            // Match if file path ends with the input path, or exact match, or contains it
-            if (
-                filePath === inputPath ||
-                filePath.endsWith('/' + inputPath) ||
-                filePath.endsWith(inputPath)
-            ) {
+            
+            // Improved matching: exact, ends with, or contains the path
+            if (filePath === inputPath || 
+                filePath.endsWith('/' + inputPath) || 
+                filePath.endsWith(inputPath)) {
                 selectedFiles.add(i);
-                document.getElementById('file-' + i).checked = true;
+                const cb = document.getElementById(`file-${i}`);
+                if (cb) cb.checked = true;
                 found = true;
             }
         });
@@ -658,48 +835,37 @@ function matchAndSelectPaths(addToExisting) {
 
     // Show results
     const resultsDiv = document.getElementById('pathResults');
-    let html = '<div class="path-summary">';
-    html += '<span class="path-matched">✅ ' + matched + ' matched</span>';
-    html += '<span class="path-unmatched">❌ ' + unmatched.length + ' not found</span>';
-    html += '</div>';
+    let html = `<div class="path-summary">
+        <span class="path-matched">✅ ${matched} matched</span>
+        <span class="path-unmatched">❌ ${unmatched.length} not found</span>
+    </div>`;
 
-    if (unmatched.length > 0) {
-        html += '<details class="path-details"><summary>Show unmatched paths</summary><ul>';
-        unmatched.forEach(p => {
-            html += '<li><code>' + escapeHtml(p) + '</code></li>';
-        });
-        html += '</ul></details>';
+    if (unmatched.length) {
+        html += `<details class="path-details"><summary>Show unmatched paths</summary><ul>`;
+        unmatched.forEach(p => html += `<li><code>${escapeHtml(p)}</code></li>`);
+        html += `</ul></details>`;
     }
 
     resultsDiv.innerHTML = html;
     resultsDiv.classList.remove('hidden');
 
-    showToast('Selected ' + matched + ' of ' + inputPaths.length + ' files');
+    showToast(`Selected ${matched} of ${inputPaths.length} paths`);
 }
 
-// Close on overlay click & Escape
-document.addEventListener('DOMContentLoaded', () => {
-    const pathModal = document.getElementById('pathModal');
-    if (pathModal) {
-        pathModal.addEventListener('click', e => {
-            if (e.target === e.currentTarget) closePathModal();
-        });
-    }
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closePathModal();
-    });
-});
-
-function showToast(message, type) {
-    type = type || 'success';
+// ── Toast ──
+function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
-    toast.className = 'toast toast-' + type;
+    toast.className = `toast toast-${type}`;
     toast.textContent = message;
     container.appendChild(toast);
+
     requestAnimationFrame(() => toast.classList.add('show'));
+
     setTimeout(() => {
         toast.classList.remove('show');
-        setTimeout(() => { if (toast.parentNode) container.removeChild(toast); }, 300);
+        setTimeout(() => {
+            if (toast.parentNode) toast.parentNode.removeChild(toast);
+        }, 300);
     }, 3000);
 }
