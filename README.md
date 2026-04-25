@@ -1,5 +1,3 @@
-**`README.md`**
-```markdown
 # 🚀 File Combiner v2
 
 ![File Combiner v2 Demo](https://github.com/user-attachments/assets/12715ddd-65a5-4de3-b302-264c9fa3f3e0)
@@ -13,6 +11,7 @@ A lightweight, zero-dependency web application that lets you drag and drop a fol
 ## ✨ Features
 
 ### Core
+
 - **Drag-and-Drop Upload** — Drop a folder or click to browse
 - **Smart Auto-Exclude** — Automatically filters out `node_modules`, `.git`, `.next`, `.venv`, `__pycache__`, `dist`, `build`, lock files, binaries, images, and 70+ other patterns
 - **Exclude Presets** — Choose from None, Minimal, Standard, or Aggressive exclusion levels
@@ -22,6 +21,7 @@ A lightweight, zero-dependency web application that lets you drag and drop a fol
 - **Search** — Real-time search bar to find files instantly
 
 ### Output
+
 - **Markdown Generation** — Combine files into markdown with optional fenced code blocks and language-specific syntax highlighting
 - **Folder Tree View** — Optionally include a visual folder structure in the output
 - **Minification** — Strip comments and whitespace from code output
@@ -31,12 +31,14 @@ A lightweight, zero-dependency web application that lets you drag and drop a fol
 - **Download** — Export as `.md` or `.txt`
 
 ### Intelligence
+
 - **Token Counter** — Estimates token count for AI model compatibility
 - **Token Limit Selector** — Presets for GPT-3.5 (4K/16K), GPT-4 (8K), GPT-4 Turbo (128K), Claude 3.5 (200K), Gemini 1.5 (1M)
 - **Token Progress Bar** — Visual indicator with safe/warning/danger states
 - **Language Breakdown** — Bar chart showing file type distribution across your project
 
 ### UI/UX
+
 - **Dark/Light Theme** — Toggle with persistent preference
 - **File Preview** — Click the 👁️ icon to preview any file before combining
 - **Toast Notifications** — Non-intrusive feedback for all actions
@@ -46,6 +48,7 @@ A lightweight, zero-dependency web application that lets you drag and drop a fol
 - **Zero Dependencies** — Pure HTML/CSS/JS, no frameworks or build tools
 
 ### Excluded File Info
+
 - **Transparency** — See exactly which files were excluded and why
 - **Expandable Details** — Collapsible list showing excluded file paths and reasons
 
@@ -53,17 +56,17 @@ A lightweight, zero-dependency web application that lets you drag and drop a fol
 
 ## 📊 Auto-Exclude Patterns (Standard Preset)
 
-| Category | Patterns |
-|----------|----------|
+| Category             | Patterns                                                           |
+| -------------------- | ------------------------------------------------------------------ |
 | **Package Managers** | `node_modules`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml` |
-| **Build Output** | `dist`, `build`, `out`, `.next`, `.nuxt`, `.svelte-kit`, `.output` |
-| **Version Control** | `.git` |
-| **Python** | `.venv`, `venv`, `__pycache__`, `*.pyc` |
-| **Cache** | `.cache`, `.turbo` |
-| **System** | `.DS_Store`, `Thumbs.db` |
-| **Logs** | `*.log`, `*.lock` |
-| **Test Coverage** | `coverage`, `.nyc_output` |
-| **Environment** | `.env`, `.env.local` |
+| **Build Output**     | `dist`, `build`, `out`, `.next`, `.nuxt`, `.svelte-kit`, `.output` |
+| **Version Control**  | `.git`                                                             |
+| **Python**           | `.venv`, `venv`, `__pycache__`, `*.pyc`                            |
+| **Cache**            | `.cache`, `.turbo`                                                 |
+| **System**           | `.DS_Store`, `Thumbs.db`                                           |
+| **Logs**             | `*.log`, `*.lock`                                                  |
+| **Test Coverage**    | `coverage`, `.nyc_output`                                          |
+| **Environment**      | `.env`, `.env.local`                                               |
 
 The **Aggressive** preset adds 70+ more patterns including images, fonts, binaries, IDE folders, and compiled files.
 
@@ -71,12 +74,12 @@ The **Aggressive** preset adds 70+ more patterns including images, fonts, binari
 
 ## 🛠️ Tech Stack
 
-| Technology | Purpose |
-|-----------|---------|
-| **HTML5** | Semantic structure with ARIA accessibility |
-| **CSS3** | CSS variables, dark mode, responsive design, custom animations |
-| **JavaScript (ES6+)** | File processing, UI interactions, markdown generation |
-| **Netlify** | Static site hosting with continuous deployment |
+| Technology            | Purpose                                                        |
+| --------------------- | -------------------------------------------------------------- |
+| **HTML5**             | Semantic structure with ARIA accessibility                     |
+| **CSS3**              | CSS variables, dark mode, responsive design, custom animations |
+| **JavaScript (ES6+)** | File processing, UI interactions, markdown generation          |
+| **Netlify**           | Static site hosting with continuous deployment                 |
 
 **Zero external dependencies** — no React, no Tailwind, no GSAP, no build step.
 
@@ -85,6 +88,7 @@ The **Aggressive** preset adds 70+ more patterns including images, fonts, binari
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - A modern web browser (Chrome, Firefox, Edge, Safari)
 - [Git](https://git-scm.com/) for version control
 - A [Netlify](https://www.netlify.com/) account for deployment (optional)
@@ -151,6 +155,7 @@ file-combiner/
 ## 🔄 Changelog
 
 ### v2.0.0 (Latest)
+
 - ✅ Auto-exclude patterns (70+ for node_modules, .git, .next, .venv, etc.)
 - ✅ Configurable exclude UI with presets (None/Minimal/Standard/Aggressive)
 - ✅ Custom exclude patterns with wildcard support
@@ -171,6 +176,7 @@ file-combiner/
 - ✅ Bug fixes (event handling, proper reset, accessibility)
 
 ### v1.0.0
+
 - Initial release with drag-and-drop, file selection, code blocks, and AI prompts
 
 ---
@@ -194,27 +200,3 @@ This project is open source and available under the [MIT License](LICENSE).
 ## 👤 Author
 
 **Manan** — [GitHub](https://github.com/Manan-49)
-```
-
----
-
-### Git Commands to Push Update
-
-```bash
-# Navigate to your project
-cd file-combiner
-
-# Stage all changed files
-git add -A
-
-# Commit with a meaningful message
-git commit -m "v2.0.0: Auto-exclude patterns, dark mode, file preview, token limits, search, language breakdown, zero dependencies"
-
-# Push to GitHub (main branch)
-git push origin main
-```
-
-> If your default branch is `master` instead of `main`:
-> ```bash
-> git push origin master
-> ```
