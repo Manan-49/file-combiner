@@ -374,9 +374,6 @@ body {
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
   background: var(--bg);
-  position: sticky;
-  top: var(--topbar-h);
-  z-index: 10;
 }
 
 .file-toolbar {
