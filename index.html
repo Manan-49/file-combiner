@@ -1,171 +1,766 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Combiner v2</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <header class="header">
-            <div class="header-row">
-                <h1>🚀 File Combiner <span class="version-badge">v2</span></h1>
-                <button type="button" class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle dark mode">☀️</button>
-            </div>
-            <p>Drag, drop, select, and combine your code files into a single markdown file</p>
-        </header>
-
-        <main class="main-content">
-            <section class="drop-zone" id="dropZone" role="region" aria-label="File drop zone">
-                <h3>📁 Drop Your Folder Here</h3>
-                <p>Drag and drop a folder containing your code files</p>
-                <p class="drop-subtitle">or click to browse</p>
-                <input type="file" id="folderInput" directory webkitdirectory multiple style="display:none;" aria-label="Select folder">
-            </section>
-
-            <section class="settings-panel hidden" id="settingsPanel" role="region" aria-label="Exclusion settings">
-                <h3>🚫 Exclude Patterns</h3>
-                <div class="exclude-presets">
-                    <button type="button" class="btn btn-secondary btn-sm preset-btn" onclick="applyPreset('none',this)">None</button>
-                    <button type="button" class="btn btn-secondary btn-sm preset-btn" onclick="applyPreset('minimal',this)">Minimal</button>
-                    <button type="button" class="btn btn-secondary btn-sm preset-btn active-preset" onclick="applyPreset('standard',this)">Standard</button>
-                    <button type="button" class="btn btn-secondary btn-sm preset-btn" onclick="applyPreset('aggressive',this)">Aggressive</button>
-                </div>
-                <div class="exclude-input-row">
-                    <input type="text" id="excludeInput" placeholder="Add pattern (e.g. node_modules, *.log)" class="exclude-input" aria-label="Add exclude pattern">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="addExcludePattern()">+ Add</button>
-                </div>
-                <div class="exclude-tags" id="excludeTags"></div>
-                <div class="exclude-info" id="excludeInfo"></div>
-                <div class="max-file-size-row">
-                    <label for="maxFileSize">Max file size:</label>
-                    <select id="maxFileSize" onchange="onMaxSizeChange()">
-                        <option value="0">No limit</option>
-                        <option value="51200">50 KB</option>
-                        <option value="102400">100 KB</option>
-                        <option value="524288" selected>512 KB</option>
-                        <option value="1048576">1 MB</option>
-                        <option value="5242880">5 MB</option>
-                        <option value="10485760">10 MB</option>
-                    </select>
-                </div>
-            </section>
-
-            <section class="stats hidden" id="stats" role="region" aria-label="File statistics">
-                <div class="stat-item"><div class="stat-number" id="totalFiles">0</div><div class="stat-label">Total Files</div></div>
-                <div class="stat-item"><div class="stat-number" id="selectedFiles">0</div><div class="stat-label">Selected</div></div>
-                <div class="stat-item"><div class="stat-number" id="totalSize">0 B</div><div class="stat-label">Selected Size</div></div>
-                <div class="stat-item"><div class="stat-number" id="excludedCount">0</div><div class="stat-label">Excluded</div></div>
-            </section>
-
-            <section class="lang-section hidden" id="languageBreakdown" role="region" aria-label="Language breakdown">
-                <h3>📊 Language Breakdown</h3>
-                <div id="languageBars"></div>
-            </section>
-
-            <div class="search-wrapper hidden" id="searchWrapper">
-                <input type="text" id="searchInput" placeholder="🔍 Search files..." class="search-input" oninput="searchFiles()" aria-label="Search files">
-            </div>
-
-            <section class="file-list hidden" id="fileList" role="region" aria-label="File list">
-                <h3>📋 Select Files to Combine</h3>
-                <div class="controls">
-                    <button type="button" class="btn btn-secondary" onclick="selectAll()">Select All</button>
-                    <button type="button" class="btn btn-secondary" onclick="selectNone()">Select None</button>
-                    <button type="button" class="btn btn-secondary" onclick="selectCodeFiles()">Code Files</button>
-                    <button type="button" class="btn btn-secondary" onclick="filterFiles('components')">🧩 Components</button>
-                    <button type="button" class="btn btn-secondary" onclick="filterFiles('styles')">🎨 Styles</button>
-                    <button type="button" class="btn btn-secondary" onclick="filterFiles('config')">⚙️ Config</button>
-                    <button type="button" class="btn btn-secondary" onclick="filterFiles('all')">📂 All</button>
-                </div>
-                <div id="fileItems" role="list"></div>
-            </section>
-
-            <div class="controls hidden" id="actionControls">
-                <button type="button" class="btn btn-primary" onclick="combineFiles()">🔗 Combine Files</button>
-                <button type="button" class="btn btn-secondary" onclick="downloadMarkdown()">💾 .md</button>
-                <button type="button" class="btn btn-secondary" onclick="downloadText()">📄 .txt</button>
-                <button type="button" class="btn btn-secondary" onclick="reset()">🔄 Reset</button>
-                <label class="btn btn-secondary checkbox-btn"><input type="checkbox" id="useCodeBlocks" checked> 📝 Code Blocks</label>
-                <label class="btn btn-secondary checkbox-btn"><input type="checkbox" id="includeTree"> 🌳 Tree</label>
-                <button type="button" class="btn btn-secondary" onclick="addPromptTemplate()">🤖 AI Prompt</button>
-                <button type="button" class="btn btn-secondary" onclick="addProjectContext()">📊 Context</button>
-                <button type="button" class="btn btn-secondary" onclick="openPathSelector()">📋 Paste Paths</button>
-                <button type="button" class="btn btn-secondary" id="minifyBtn" onclick="toggleMinifyFiles()">📦 Minify</button>
-            </div>
-
-            <section class="output-section hidden" id="outputSection" role="region" aria-label="Combined output">
-                <h3>📄 Combined Output</h3>
-                <div class="controls" style="margin-bottom:15px;">
-                    <button type="button" class="btn btn-primary" onclick="copyToClipboard()">📋 Copy</button>
-                    <button type="button" class="btn btn-secondary" onclick="addCustomPrompt()">✏️ Custom Prompt</button>
-                    <select id="tokenLimitSelect" onchange="updateTokenDisplay()" class="token-select" aria-label="Token limit">
-                        <option value="0">No Limit</option>
-                        <option value="4096">GPT-3.5 (4K)</option>
-                        <option value="16384">GPT-3.5-16K</option>
-                        <option value="8192">GPT-4 (8K)</option>
-                        <option value="128000" selected>GPT-4 Turbo (128K)</option>
-                        <option value="200000">Claude 3.5 (200K)</option>
-                        <option value="1000000">Gemini 1.5 (1M)</option>
-                    </select>
-                </div>
-                <textarea class="output-textarea" id="outputTextarea" placeholder="Combined files will appear here..."></textarea>
-                <div id="tokenCounter" class="token-counter" style="display:none;">
-                    <div class="token-info"><span id="tokenCount">0</span> / <span id="tokenLimit">128,000</span> tokens</div>
-                    <div class="token-bar-track"><div class="token-bar-fill safe" id="tokenProgress"></div></div>
-                    <div class="token-warning hidden" id="tokenWarning">⚠️ Content exceeds token limit!</div>
-                </div>
-            </section>
-        </main>
-
-        <footer class="footer">
-            <p>File Combiner v2 &middot; <a href="https://github.com/Manan-49/file-combiner" target="_blank" rel="noopener">GitHub</a></p>
-        </footer>
-    </div>
-
-    <div class="modal-overlay hidden" id="previewModal" role="dialog" aria-modal="true">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="previewFileName">Preview</h3>
-                <button type="button" class="modal-close" onclick="closePreviewModal()">&times;</button>
-            </div>
-            <pre class="modal-body" id="previewContent"></pre>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File Combiner</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      (function () {
+        try {
+          const t = localStorage.getItem("fc-theme");
+          if (t) document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="app">
+      <!-- ── Top Bar ── -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <span class="app-logo" aria-hidden="true">⬡</span>
+          <span class="app-name">File Combiner</span>
+          <span class="version-chip">v2</span>
         </div>
-    </div>
-
-    <div class="modal-overlay hidden" id="promptModal" role="dialog" aria-modal="true">
-        <div class="modal-content modal-sm">
-            <div class="modal-header">
-                <h3>🤖 AI Prompt Templates</h3>
-                <button type="button" class="modal-close" onclick="closePromptModal()">&times;</button>
-            </div>
-            <div class="modal-body-buttons" id="promptButtons"></div>
+        <div class="topbar-right">
+          <button
+            type="button"
+            class="icon-btn"
+            id="themeToggle"
+            aria-label="Switch to dark mode"
+          >
+            <svg
+              id="iconMoon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+            <svg
+              id="iconSun"
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="hidden"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </svg>
+          </button>
+          <a
+            href="https://github.com/Manan-49/file-combiner"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="icon-btn"
+            aria-label="GitHub repository"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+              />
+            </svg>
+          </a>
         </div>
-    </div>
+      </header>
 
-    <!-- Path Selector Modal -->
-    <div class="modal-overlay hidden" id="pathModal" role="dialog" aria-modal="true">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>📋 Paste File Paths</h3>
-                <button type="button" class="modal-close" onclick="closePathModal()">&times;</button>
-            </div>
-            <p class="path-modal-desc">Paste file paths (one per line) to auto-select matching files from your loaded folder.</p>
-            <textarea class="path-textarea" id="pathTextarea" placeholder="app/api/checkout/route.ts
-app/api/cart/route.ts
-app/api/orders/route.ts
-app/api/products/[id]/route.ts"></textarea>
-            <div class="path-modal-actions">
-                <button type="button" class="btn btn-primary" onclick="matchAndSelectPaths()">✅ Match & Select</button>
-                <button type="button" class="btn btn-secondary" onclick="matchAndSelectPaths(true)">➕ Add to Selection</button>
-                <button type="button" class="btn btn-secondary" onclick="closePathModal()">Cancel</button>
-            </div>
-            <div class="path-results hidden" id="pathResults"></div>
+      <main class="main">
+        <!-- ── Drop Zone ── -->
+        <section
+          class="drop-zone"
+          id="dropZone"
+          role="region"
+          aria-label="File drop zone"
+          tabindex="0"
+        >
+          <input
+            type="file"
+            id="folderInput"
+            webkitdirectory
+            mozdirectory
+            directory
+            multiple
+            style="display: none"
+            aria-label="Select folder"
+          />
+          <div class="drop-icon" aria-hidden="true">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"
+              />
+            </svg>
+          </div>
+          <p class="drop-title">Drop a folder here</p>
+          <p class="drop-sub">
+            or <span class="drop-link">click to browse</span>
+          </p>
+        </section>
+
+        <!-- ── Loading Progress ── -->
+        <div
+          class="load-progress hidden"
+          id="loadProgress"
+          role="status"
+          aria-label="Loading files"
+        >
+          <div class="load-progress-header">
+            <span class="load-progress-label" id="loadProgressLabel"
+              >Processing files…</span
+            >
+            <span class="load-progress-pct" id="loadProgressPct">0%</span>
+          </div>
+          <div class="progress-track">
+            <div
+              class="progress-fill"
+              id="progressFill"
+              style="width: 0%"
+            ></div>
+          </div>
         </div>
+
+        <!-- ── Settings Panel ── -->
+        <section
+          class="panel hidden"
+          id="settingsPanel"
+          role="region"
+          aria-label="Exclusion settings"
+        >
+          <div
+            class="panel-header"
+            id="settingsPanelHeader"
+            role="button"
+            tabindex="0"
+            aria-expanded="true"
+            aria-controls="settingsPanelBody"
+          >
+            <span class="panel-title">Exclude Patterns</span>
+            <svg
+              class="chevron"
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+          <div class="panel-body" id="settingsPanelBody">
+            <div class="preset-row">
+              <span class="row-label">Preset</span>
+              <div class="chip-group" id="presetChips">
+                <button type="button" class="chip" data-preset="none">
+                  None
+                </button>
+                <button type="button" class="chip" data-preset="minimal">
+                  Minimal
+                </button>
+                <button
+                  type="button"
+                  class="chip chip-active"
+                  data-preset="standard"
+                >
+                  Standard
+                </button>
+                <button type="button" class="chip" data-preset="aggressive">
+                  Aggressive
+                </button>
+              </div>
+            </div>
+
+            <div class="input-row">
+              <input
+                type="text"
+                id="excludeInput"
+                class="input"
+                placeholder="Add pattern, e.g. *.log or build"
+                aria-label="Add exclude pattern"
+              />
+              <button type="button" class="btn btn-sm" id="addExcludeBtn">
+                Add
+              </button>
+            </div>
+
+            <div class="tag-list" id="excludeTags"></div>
+            <div class="exclude-info" id="excludeInfo"></div>
+
+            <div class="row-inline">
+              <label for="maxFileSize" class="row-label">Max file size</label>
+              <select
+                id="maxFileSize"
+                class="select"
+                aria-label="Maximum file size"
+              >
+                <option value="0">No limit</option>
+                <option value="51200">50 KB</option>
+                <option value="102400">100 KB</option>
+                <option value="524288" selected>512 KB</option>
+                <option value="1048576">1 MB</option>
+                <option value="5242880">5 MB</option>
+                <option value="10485760">10 MB</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Stats ── -->
+        <div
+          class="stats-row hidden"
+          id="stats"
+          role="region"
+          aria-label="File statistics"
+        >
+          <div class="stat-card">
+            <span class="stat-value" id="totalFiles">0</span>
+            <span class="stat-label">Total</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="selectedFiles">0</span>
+            <span class="stat-label">Selected</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="totalSize">0 B</span>
+            <span class="stat-label">Size</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="excludedCount">0</span>
+            <span class="stat-label">Excluded</span>
+          </div>
+        </div>
+
+        <!-- ── Language Breakdown ── -->
+        <section
+          class="panel hidden"
+          id="languageBreakdown"
+          role="region"
+          aria-label="Language breakdown"
+        >
+          <div
+            class="panel-header"
+            id="langPanelHeader"
+            role="button"
+            tabindex="0"
+            aria-expanded="true"
+            aria-controls="langPanelBody"
+          >
+            <span class="panel-title">Language Breakdown</span>
+            <svg
+              class="chevron"
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+          <div class="panel-body" id="langPanelBody">
+            <div id="languageBars"></div>
+          </div>
+        </section>
+
+        <!-- ── Search ── -->
+        <div class="search-wrap hidden" id="searchWrapper">
+          <div class="search-inner">
+            <svg
+              class="search-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Search files…"
+              aria-label="Search files"
+              autocomplete="off"
+            />
+            <button
+              type="button"
+              class="search-clear hidden"
+              id="searchClear"
+              aria-label="Clear search"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ── File List ── -->
+        <section
+          class="panel file-panel hidden"
+          id="fileList"
+          role="region"
+          aria-label="File list"
+        >
+          <div class="file-panel-header">
+            <span class="panel-title">Files</span>
+            <div class="file-toolbar">
+              <div class="btn-group">
+                <button type="button" class="btn btn-xs" id="selectAllBtn">
+                  All
+                </button>
+                <button type="button" class="btn btn-xs" id="selectNoneBtn">
+                  None
+                </button>
+                <button type="button" class="btn btn-xs" id="selectCodeBtn">
+                  Code
+                </button>
+              </div>
+              <div class="btn-group filter-group">
+                <button
+                  type="button"
+                  class="btn btn-xs chip-active"
+                  data-filter="all"
+                >
+                  All
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-xs"
+                  data-filter="components"
+                >
+                  Components
+                </button>
+                <button type="button" class="btn btn-xs" data-filter="styles">
+                  Styles
+                </button>
+                <button type="button" class="btn btn-xs" data-filter="config">
+                  Config
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="file-list-body" id="fileItems" role="list">
+            <div class="empty-state hidden" id="fileEmptyState">
+              No files match your search.
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Action Bar ── -->
+        <div class="action-bar hidden" id="actionControls">
+          <div class="action-bar-primary">
+            <button type="button" class="btn btn-primary" id="combineBtn">
+              Combine Files
+            </button>
+            <label class="toggle-label">
+              <input type="checkbox" id="useCodeBlocks" checked />
+              Code blocks
+            </label>
+            <label class="toggle-label">
+              <input type="checkbox" id="includeTree" />
+              File tree
+            </label>
+            <button type="button" class="btn btn-ghost btn-sm" id="minifyBtn">
+              Minify: <span id="minifyState">Off</span>
+            </button>
+          </div>
+          <div class="action-bar-secondary">
+            <button
+              type="button"
+              class="btn btn-ghost btn-sm"
+              id="downloadMdBtn"
+            >
+              Export .md
+            </button>
+            <button
+              type="button"
+              class="btn btn-ghost btn-sm"
+              id="downloadTxtBtn"
+            >
+              Export .txt
+            </button>
+            <button
+              type="button"
+              class="btn btn-ghost btn-sm"
+              id="promptTemplateBtn"
+            >
+              AI Prompt
+            </button>
+            <button
+              type="button"
+              class="btn btn-ghost btn-sm"
+              id="projectContextBtn"
+            >
+              Context
+            </button>
+            <button
+              type="button"
+              class="btn btn-ghost btn-sm"
+              id="pastePathsBtn"
+            >
+              Paste Paths
+            </button>
+            <button
+              type="button"
+              class="btn btn-ghost btn-sm danger-hover"
+              id="resetBtn"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+
+        <!-- ── Output Section ── -->
+        <section
+          class="panel hidden"
+          id="outputSection"
+          role="region"
+          aria-label="Combined output"
+        >
+          <div class="output-header">
+            <span class="panel-title">Output</span>
+            <div class="output-header-right">
+              <select
+                id="tokenLimitSelect"
+                class="select select-sm"
+                aria-label="Token limit"
+              >
+                <option value="0">No token limit</option>
+                <option value="4096">GPT-3.5 (4K)</option>
+                <option value="16384">GPT-3.5-16K</option>
+                <option value="8192">GPT-4 (8K)</option>
+                <option value="128000" selected>GPT-4 Turbo (128K)</option>
+                <option value="200000">Claude 3.5 (200K)</option>
+                <option value="1000000">Gemini 1.5 (1M)</option>
+              </select>
+              <button type="button" class="btn btn-sm" id="copyBtn">
+                Copy
+              </button>
+              <button
+                type="button"
+                class="btn btn-ghost btn-sm"
+                id="customPromptBtn"
+              >
+                + Prompt
+              </button>
+            </div>
+          </div>
+
+          <textarea
+            class="output-textarea"
+            id="outputTextarea"
+            placeholder="Combined output will appear here…"
+            aria-label="Combined output"
+            spellcheck="false"
+          ></textarea>
+
+          <div id="tokenCounter" class="token-counter hidden">
+            <div class="token-row">
+              <span id="tokenCount" class="token-count">0</span>
+              <span class="token-sep"
+                >/ <span id="tokenLimit">128,000</span> tokens</span
+              >
+              <div class="token-bar-wrap">
+                <div class="token-bar-track">
+                  <div class="token-bar-fill" id="tokenProgress"></div>
+                </div>
+              </div>
+            </div>
+            <p class="token-warning hidden" id="tokenWarning">
+              Exceeds token limit
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        File Combiner v2 &middot;
+        <a
+          href="https://github.com/Manan-49/file-combiner"
+          target="_blank"
+          rel="noopener noreferrer"
+          >GitHub</a
+        >
+      </footer>
     </div>
 
-    <div id="toastContainer" class="toast-container"></div>
+    <!-- ── Preview Modal ── -->
+    <div
+      class="modal-overlay hidden"
+      id="previewModal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="previewFileName"
+    >
+      <div class="modal modal-lg">
+        <div class="modal-header">
+          <span class="modal-title" id="previewFileName">Preview</span>
+          <button
+            type="button"
+            class="icon-btn"
+            id="closePreviewBtn"
+            aria-label="Close"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <pre class="modal-code" id="previewContent"></pre>
+        <div class="notice hidden" id="previewTruncated">
+          Preview truncated at 50,000 characters — full content included when
+          combining.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── AI Prompt Modal ── -->
+    <div
+      class="modal-overlay hidden"
+      id="promptModal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="promptModalTitle"
+    >
+      <div class="modal modal-sm">
+        <div class="modal-header">
+          <span class="modal-title" id="promptModalTitle"
+            >AI Prompt Templates</span
+          >
+          <button
+            type="button"
+            class="icon-btn"
+            id="closePromptBtn"
+            aria-label="Close"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <p class="modal-desc">Select a template to prepend to your output.</p>
+        <div class="prompt-list" id="promptButtons"></div>
+      </div>
+    </div>
+
+    <!-- ── Custom Prompt Modal ── -->
+    <div
+      class="modal-overlay hidden"
+      id="customPromptModal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="customPromptTitle"
+    >
+      <div class="modal modal-sm">
+        <div class="modal-header">
+          <span class="modal-title" id="customPromptTitle">Custom Prompt</span>
+          <button
+            type="button"
+            class="icon-btn"
+            id="closeCustomPromptBtn"
+            aria-label="Close"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <p class="modal-desc">
+          Enter an instruction to prepend to your combined output.
+        </p>
+        <textarea
+          class="modal-textarea"
+          id="customPromptInput"
+          placeholder="e.g. Review this code for security vulnerabilities…"
+          rows="4"
+          aria-label="Custom prompt"
+        ></textarea>
+        <div class="modal-actions">
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            id="applyCustomPromptBtn"
+          >
+            Apply
+          </button>
+          <button
+            type="button"
+            class="btn btn-ghost btn-sm"
+            id="cancelCustomPromptBtn"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Path Selector Modal ── -->
+    <div
+      class="modal-overlay hidden"
+      id="pathModal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="pathModalTitle"
+    >
+      <div class="modal">
+        <div class="modal-header">
+          <span class="modal-title" id="pathModalTitle">Paste File Paths</span>
+          <button
+            type="button"
+            class="icon-btn"
+            id="closePathBtn"
+            aria-label="Close"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <p class="modal-desc">
+          Paste file paths (one per line) to auto-select matching files.
+        </p>
+        <textarea
+          class="modal-textarea"
+          id="pathTextarea"
+          placeholder="app/api/checkout/route.ts&#10;app/api/cart/route.ts&#10;app/api/orders/route.ts"
+          rows="6"
+          aria-label="File paths"
+        ></textarea>
+        <div class="modal-actions">
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            id="matchSelectBtn"
+          >
+            Match &amp; Select
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" id="matchAddBtn">
+            Add to Selection
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" id="cancelPathBtn">
+            Cancel
+          </button>
+        </div>
+        <div class="path-results hidden" id="pathResults"></div>
+      </div>
+    </div>
+
+    <!-- ── Toast ── -->
+    <div
+      id="toastContainer"
+      class="toast-container"
+      aria-live="polite"
+      aria-atomic="false"
+    ></div>
+
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
