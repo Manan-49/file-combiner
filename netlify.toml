@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Static deployment configuration for Netlify.
 [build]
   command = ""
@@ -42,3 +43,11 @@
   for = "/icons/*"
   [headers.values]
     Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+=======
+# netlify.toml
+[build]
+  # No build command needed for static HTML/CSS/JS
+  command = ""
+  # Publish the root directory
+  publish = "."
+>>>>>>> 2c0303af1287c6537f17a1e2e5d5ec49992092eb
