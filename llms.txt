@@ -1,0 +1,30 @@
+# File Combiner
+
+> A free, privacy-first browser app for combining selected code files, documentation, and configuration into one AI-ready Markdown, XML, or plain-text context file.
+
+## Product summary
+
+File Combiner runs locally in the browser. It has no account requirement and no server-side code-upload flow. Users can select a folder or individual files, exclude noise such as dependencies and build output, choose relevant files, inspect an estimated token budget, then copy or download a combined result.
+
+## Core capabilities
+
+- Folder selection, multi-file selection, and nested folder drag-and-drop in supported browsers
+- Standard, Minimal, None, and Aggressive exclusion presets
+- Custom glob-style exclusion patterns
+- Search, language filters, file sorting, and paste-path selection
+- Markdown, XML, and plain-text output
+- Optional folder tree, safe whitespace compaction, prompt templates, project brief, token estimates
+- Optional likely-secret redaction in generated output
+- Local browser processing; selected file contents are not uploaded by the app
+
+## Safety notes
+
+The standard preset excludes common environment and private-key file names. The likely-secret redaction feature is an additional safeguard, not a guarantee. Users should review the final output before sharing it with any third-party AI provider or service.
+
+## Primary URL
+
+https://file-combiner.netlify.app/
+
+## Source repository
+
+https://github.com/Manan-49/file-combiner

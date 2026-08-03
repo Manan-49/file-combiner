@@ -1,0 +1,5 @@
+# File Combiner is a public, indexable browser application.
+User-agent: *
+Allow: /
+
+Sitemap: https://file-combiner.netlify.app/sitemap.xml

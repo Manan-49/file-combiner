@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How to Combine Code Files for AI | File Combiner</title>
+    <meta name="description" content="Learn how to combine code files into a focused AI prompt: what to include, what to exclude, how to manage token budgets, and when to use Markdown or XML." />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
+    <link rel="canonical" href="https://file-combiner.netlify.app/guides/combine-code-files-for-ai.html" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="File Combiner" />
+    <meta property="og:title" content="How to Combine Code Files for AI Without Losing Context" />
+    <meta property="og:description" content="A practical guide to building focused, AI-ready project context." />
+    <meta property="og:url" content="https://file-combiner.netlify.app/guides/combine-code-files-for-ai.html" />
+    <meta property="og:image" content="https://file-combiner.netlify.app/assets/og-file-combiner.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Article",
+            "headline": "How to Combine Code Files for AI Without Losing Context",
+            "description": "A practical guide to selecting, combining, and reviewing code context for an AI workflow.",
+            "datePublished": "2026-08-03",
+            "dateModified": "2026-08-03",
+            "mainEntityOfPage": "https://file-combiner.netlify.app/guides/combine-code-files-for-ai.html",
+            "image": "https://file-combiner.netlify.app/assets/og-file-combiner.png",
+            "author": { "@type": "Organization", "name": "File Combiner" },
+            "publisher": { "@type": "Organization", "name": "File Combiner" }
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Should I paste my entire codebase into an AI prompt?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Usually no. Include the files that define the reported behavior and its direct dependencies, then add a file tree or a concise project brief for context." }
+              },
+              {
+                "@type": "Question",
+                "name": "Which output format is best for code context?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Markdown is a strong general default. XML gives files explicit structural boundaries, while plain text has the smallest wrapper. The best choice depends on the destination workflow." }
+              },
+              {
+                "@type": "Question",
+                "name": "Is a character-based token estimate exact?",
+                "acceptedAnswer": { "@type": "Answer", "text": "No. Tokenizers vary across AI models. Use an estimate to stay comfortably below a provider limit and retain room for a prompt and response." }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#article">Skip to article</a>
+    <div class="guide-shell">
+      <header class="topbar" aria-label="Guide navigation">
+        <a class="brand" href="/" aria-label="File Combiner home"><span class="app-logo brand-mark" aria-hidden="true">⌘</span><span class="app-name">File Combiner</span><span class="version-chip">v3</span></a>
+        <nav class="topbar-nav" aria-label="Primary"><a href="/#combiner">Combiner</a><a href="/guides/">Guides</a><a href="/#privacy">Privacy</a></nav>
+        <div class="topbar-right"><a href="https://github.com/Manan-49/file-combiner" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="Open File Combiner on GitHub" title="GitHub repository"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" /></svg></a></div>
+      </header>
+
+      <main class="guide-main">
+        <nav class="guide-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/guides/">Guides</a><span aria-hidden="true">/</span><span>Code context</span></nav>
+        <header class="guide-hero">
+          <p class="eyebrow">Workflow guide</p>
+          <h1>How to combine code files for AI without losing context</h1>
+          <p class="guide-dek">The best AI prompt is rarely an entire repository. It is a small, well-framed slice of the project that lets a model see the behavior, the constraints, and the files that actually matter.</p>
+          <p class="guide-meta"><time datetime="2026-08-03">Updated August 3, 2026</time> · 7 min read</p>
+        </header>
+
+        <div class="guide-layout">
+          <article class="article-body" id="article">
+            <p>When an AI assistant gives a vague or incorrect answer about a codebase, the problem is often missing context—not a lack of model capability. A single component without its data contract, a route without its middleware, or a failing test without the implementation leaves too much for the model to guess.</p>
+            <p>At the same time, pasting every generated asset, dependency, lockfile, and historical migration into a chat makes the important signal harder to find. A focused combined file solves both problems: it carries the relevant code and preserves where each file came from.</p>
+
+            <h2 id="goal">Start with a clear task</h2>
+            <p>Decide what you want from the AI before selecting files. A useful request is specific about the result and the boundary of the work: “Trace why checkout fails after a discount is applied,” “Review this authentication flow for authorization gaps,” or “Write tests for this parser’s edge cases.”</p>
+            <p>That task defines the first set of files to include. For a bug, start at the entry point and follow the data or control flow to the implementation. For a refactor, include the public interface, direct consumers, tests, and configuration that constrains the design. For documentation, include the root README, application entry point, and the main modules rather than every helper.</p>
+
+            <div class="article-callout"><strong>Useful rule:</strong> include the code that produces the behavior, the code that consumes it, and the contract between them. Add one layer of surrounding context only when the task requires it.</div>
+
+            <h2 id="exclude">Remove noise before you combine</h2>
+            <p>Dependency trees and build output can turn a small issue into hundreds of thousands of irrelevant tokens. Exclude them first. A practical default ignores directories such as <code>node_modules</code>, <code>.git</code>, <code>dist</code>, <code>build</code>, language caches, coverage output, and lockfiles unless the task is specifically about one of them.</p>
+            <p>Generated files deserve the same treatment. They can repeat code that is already represented by source files, and they often create misleading matches during a review. If a generated artifact is the thing you need to diagnose, include it deliberately rather than making it part of every prompt.</p>
+            <ul>
+              <li>Keep source, tests, project configuration, and concise documentation.</li>
+              <li>Skip vendor dependencies, caches, compiled output, binary assets, and large logs.</li>
+              <li>Exclude environment files and credentials even when the requested task is not security-related.</li>
+              <li>Use an explicit path list when the request names a small set of files.</li>
+            </ul>
+
+            <h2 id="selection">Build a focused selection</h2>
+            <p>A useful selection has a visible shape. For example, a frontend rendering issue may need the page component, its child components, the hook that loads data, the API client, the relevant types, and the failing test. It probably does not need all pages in the application.</p>
+            <p>Keep a root-level configuration file when it explains the framework, build behavior, aliases, or runtime mode. A short README can also answer questions that code alone cannot, such as how the service is intended to be started. Adding a file tree is a compact way to give an AI the project’s shape without including every file.</p>
+            <p>If you are working from a task ticket or an AI has requested filenames, paste the paths into the selector. This is more reliable than manually hunting through a large list and makes the selection easy to reproduce.</p>
+
+            <h2 id="format">Choose a format that preserves boundaries</h2>
+            <p>File boundaries are essential. Without them, a model cannot reliably tell where one module ends and another begins. A combined output should put a path ahead of every file and retain the original text without clever transformations.</p>
+            <h3>Markdown</h3>
+            <p>Markdown is a strong default for chats and code reviews. Headings make files easy to scan and fenced code blocks provide a language hint. It works well when you also want to prepend an instruction or a short project brief.</p>
+            <h3>XML</h3>
+            <p>XML is useful when a workflow benefits from explicit tags such as <code>&lt;file path="…"&gt;</code>. The wrapper makes it especially clear that the contents are source material rather than instructions. It can be a good choice for repeatable prompts and structured downstream processing.</p>
+            <h3>Plain text</h3>
+            <p>Plain text is the smallest wrapper. Use it when the destination has strict formatting expectations or when every extra token matters. Keep clear separators and paths even in this mode.</p>
+
+            <h2 id="budget">Stay below the context budget</h2>
+            <p>A model’s advertised context window is not all available for your code. Your instruction, the conversation history, tool output, and the answer itself need room too. Treat a token estimate as a planning number, not an exact measurement; tokenizers vary by model.</p>
+            <p>Leave a buffer rather than aiming for the maximum. If a selection does not fit, remove distant dependencies first. Then replace broad folders with the specific functions, tests, or configuration files required for the task. A “fit to budget” action can make a conservative first cut, but human judgment should decide whether the remaining set tells a coherent story.</p>
+
+            <h2 id="prompt">Add a request the model can act on</h2>
+            <p>Combined files provide evidence. Your prompt tells the model what to do with that evidence. State the goal, expected output, constraints, and uncertainty. For example:</p>
+            <div class="article-callout"><strong>Prompt pattern:</strong> “Review the selected files to explain why a signed-in user can receive another user’s cached profile. Identify the shortest likely path to the bug, propose a minimal fix, and list tests that prove the fix. Do not assume files not shown.”</div>
+            <p>The final sentence is valuable. It tells the model to label assumptions instead of inventing missing implementation details. When it asks for another file, add that file and regenerate a tighter context instead of expanding the selection indiscriminately.</p>
+
+            <h2 id="review">Review before you share</h2>
+            <p>Before copying the result into an external service, scan the output itself. Look for API keys, passwords, customer information, internal hostnames, private URLs, or proprietary data that should not leave your environment. Exclusion patterns and likely-secret masking reduce accidental exposure, but neither can understand every sensitive value.</p>
+            <p>Once the output is clean, save a copy if the task is long-running. A reproducible context file makes it easier to compare AI answers, hand work to another developer, or repeat the same review after a change.</p>
+
+            <section class="guide-cta" aria-labelledby="ctaTitle">
+              <h2 id="ctaTitle">Build a focused context now</h2>
+              <p>Use File Combiner to select a local project folder, remove noise, check the context estimate, and export an AI-ready file without an upload step.</p>
+              <a class="btn btn-primary" href="/#combiner">Open the file combiner</a>
+            </section>
+
+            <section class="guide-faq" aria-labelledby="faqTitle">
+              <p class="eyebrow">FAQ</p>
+              <h2 id="faqTitle">Combining code files for AI</h2>
+              <div class="faq-list">
+                <details><summary>Should I paste my entire codebase into an AI prompt?</summary><p>Usually no. Start with the files that define the behavior, their direct dependencies, tests, and a small amount of structural context. Add files only when they resolve a specific uncertainty.</p></details>
+                <details><summary>Which output format is best?</summary><p>Markdown is a good general default. XML makes file boundaries structurally explicit; plain text is useful when the smallest wrapper is preferred. The quality of selection matters more than the wrapper.</p></details>
+                <details><summary>Is a token estimate exact?</summary><p>No. Different models tokenize text differently. Use it to leave a comfortable buffer below the destination provider’s limit.</p></details>
+              </div>
+            </section>
+          </article>
+
+          <aside class="article-toc" aria-label="Table of contents"><strong>On this page</strong><a href="#goal">Start with a task</a><a href="#exclude">Remove noise</a><a href="#selection">Build a selection</a><a href="#format">Choose a format</a><a href="#budget">Manage the budget</a><a href="#prompt">Add a request</a><a href="#review">Review before sharing</a></aside>
+        </div>
+      </main>
+
+      <footer class="footer"><span>File Combiner · Private browser-based file combining</span><span class="footer-links"><a href="/">Combiner</a><a href="/guides/">Guides</a><a href="/#privacy">Privacy</a><a href="https://github.com/Manan-49/file-combiner" target="_blank" rel="noopener noreferrer">GitHub</a></span></footer>
+    </div>
+  </body>
+</html>

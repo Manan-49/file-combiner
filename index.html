@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Combine code files, project folders, docs, and config into one AI-ready Markdown, XML, or text prompt. Free, private, browser-based processing with no uploads."
+    />
+    <meta
+      name="keywords"
+      content="file combiner, code file combiner, combine code files, codebase to prompt, AI prompt generator, combine folder files, markdown file combiner"
+    />
+    <meta
+      name="robots"
+      content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+    />
+    <meta name="theme-color" content="#111827" />
+    <meta name="color-scheme" content="light dark" />
+
+    <title>Free Code File Combiner for AI Prompts | Private &amp; Local</title>
+    <link rel="canonical" href="https://file-combiner.netlify.app/" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="File Combiner" />
+    <meta
+      property="og:title"
+      content="File Combiner — Turn a codebase into an AI-ready prompt"
+    />
+    <meta
+      property="og:description"
+      content="Combine folders and code files locally in your browser. No upload, no account, no server-side processing."
+    />
+    <meta property="og:url" content="https://file-combiner.netlify.app/" />
+    <meta
+      property="og:image"
+      content="https://file-combiner.netlify.app/assets/og-file-combiner.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="File Combiner — private codebase to AI prompt tool"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="File Combiner — private codebase to AI prompt tool"
+    />
+    <meta
+      name="twitter:description"
+      content="Combine code folders into an AI-ready prompt in your browser."
+    />
+    <meta
+      name="twitter:image"
+      content="https://file-combiner.netlify.app/assets/og-file-combiner.png"
+    />
+
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://file-combiner.netlify.app/#website",
+            "url": "https://file-combiner.netlify.app/",
+            "name": "File Combiner",
+            "description": "A private, browser-based tool for combining code files into AI-ready prompts."
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://file-combiner.netlify.app/#app",
+            "name": "File Combiner",
+            "applicationCategory": "DeveloperApplication",
+            "applicationSubCategory": "Code file combiner",
+            "operatingSystem": "Any modern web browser",
+            "url": "https://file-combiner.netlify.app/",
+            "image": "https://file-combiner.netlify.app/assets/og-file-combiner.png",
+            "description": "A free, local-first web app that combines code files and folders into Markdown, XML, or plain-text prompts for AI tools.",
+            "isAccessibleForFree": true,
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "featureList": [
+              "Folder and multi-file selection",
+              "Browser-only local processing",
+              "AI-ready Markdown, XML, and plain-text output",
+              "Configurable exclusions and token estimates",
+              "Optional likely-secret redaction"
+            ],
+            "sameAs": ["https://github.com/Manan-49/file-combiner"]
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://file-combiner.netlify.app/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Does File Combiner upload my code?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. File Combiner reads selected files in your browser and creates the output locally. It has no code-upload endpoint or account requirement."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What can I combine with File Combiner?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "You can combine text-based source files, documentation, and configuration files from a folder or a multi-file selection. Known binary files are skipped."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I use the output with ChatGPT, Claude, or Gemini?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Choose Markdown, XML, or plain-text output, review the generated context and token estimate, then copy or download it for an AI workflow."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How does secret protection work?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "The standard exclusion preset omits common environment files. The optional output safeguard masks likely credential values in generated output, but you should always review content before sharing it."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#combiner">Skip to file combiner</a>
+
+    <div class="app">
+      <header class="topbar" aria-label="Main navigation">
+        <a class="brand" href="#top" aria-label="File Combiner home">
+          <span class="app-logo brand-mark" aria-hidden="true">⌘</span>
+          <span class="app-name">File Combiner</span>
+          <span class="version-chip">v3</span>
+        </a>
+
+        <nav class="topbar-nav" aria-label="On this page">
+          <a href="#how-it-works">How it works</a>
+          <a href="#privacy">Privacy</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+
+        <div class="topbar-right">
+          <button
+            type="button"
+            class="icon-btn"
+            id="themeToggle"
+            aria-label="Switch to dark mode"
+            title="Toggle colour theme"
+          >
+            <svg
+              id="iconMoon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+            <svg
+              id="iconSun"
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="hidden"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </svg>
+          </button>
+          <a
+            href="https://github.com/Manan-49/file-combiner"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="icon-btn"
+            aria-label="Open File Combiner on GitHub"
+            title="GitHub repository"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+              />
+            </svg>
+          </a>
+        </div>
+      </header>
+
+      <main id="top" class="main">
+        <section class="hero" aria-labelledby="pageTitle">
+          <p class="eyebrow">Free · local-first · no upload</p>
+          <h1 id="pageTitle">Combine code files into one AI-ready prompt — privately.</h1>
+          <p class="hero-copy">
+            Select a project folder or individual files, keep only the context that
+            matters, and export clean Markdown, XML, or plain text for code review,
+            debugging, refactoring, and documentation.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#combiner">Start combining</a>
+            <a class="btn btn-ghost" href="#how-it-works">See how it works</a>
+          </div>
+          <ul class="proof-list">
+            <li>Runs entirely in your browser</li>
+            <li>No account or code upload</li>
+            <li>Secret-aware output safeguard</li>
+          </ul>
+        </section>
+
+        <section class="workspace" id="combiner" aria-labelledby="workspaceTitle">
+          <div class="workspace-heading">
+            <div>
+              <p class="workspace-kicker">Workspace</p>
+              <h2 id="workspaceTitle">Build your project context</h2>
+            </div>
+            <p class="workspace-status" id="workspaceStatus" aria-live="polite">
+              Nothing leaves this browser.
+            </p>
+          </div>
+
+          <section
+            class="drop-zone"
+            id="dropZone"
+            aria-label="Drop a folder or files here"
+            tabindex="0"
+          >
+            <input
+              type="file"
+              id="folderInput"
+              webkitdirectory
+              mozdirectory
+              directory
+              multiple
+              hidden
+              aria-label="Select a project folder"
+            />
+            <input
+              type="file"
+              id="filesInput"
+              multiple
+              hidden
+              aria-label="Select code files"
+            />
+            <div class="drop-icon" aria-hidden="true">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2.5h6.5A2.5 2.5 0 0 1 21 10v8.5a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 18.5z" />
+                <path d="M12 10v7m-3-3 3 3 3-3" />
+              </svg>
+            </div>
+            <p class="drop-title">Drop a project folder or files here</p>
+            <p class="drop-sub">Folders, files, and nested drag-and-drop are supported.</p>
+            <div class="drop-actions">
+              <button type="button" class="btn btn-primary btn-sm" id="browseFolderBtn">
+                Choose folder
+              </button>
+              <button type="button" class="btn btn-ghost btn-sm" id="browseFilesBtn">
+                Choose files
+              </button>
+            </div>
+            <p class="drop-note">Text-based files only. Known binary files are skipped.</p>
+          </section>
+
+          <div
+            class="load-progress hidden"
+            id="loadProgress"
+            role="status"
+            aria-label="Loading files"
+          >
+            <div class="load-progress-header">
+              <span class="load-progress-label" id="loadProgressLabel">Processing files…</span>
+              <span class="load-progress-pct" id="loadProgressPct">0%</span>
+            </div>
+            <div class="progress-track" aria-hidden="true">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+
+          <section
+            class="panel hidden"
+            id="settingsPanel"
+            aria-labelledby="settingsTitle"
+          >
+            <button
+              type="button"
+              class="panel-header"
+              id="settingsPanelHeader"
+              aria-expanded="true"
+              aria-controls="settingsPanelBody"
+            >
+              <span class="panel-title" id="settingsTitle">Inclusion settings</span>
+              <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
+            </button>
+            <div class="panel-body" id="settingsPanelBody">
+              <div class="preset-row">
+                <span class="row-label">Exclude preset</span>
+                <div class="chip-group" id="presetChips" role="group" aria-label="Exclusion preset">
+                  <button type="button" class="chip" data-preset="none">None</button>
+                  <button type="button" class="chip" data-preset="minimal">Minimal</button>
+                  <button type="button" class="chip chip-active" data-preset="standard">Standard</button>
+                  <button type="button" class="chip" data-preset="aggressive">Aggressive</button>
+                </div>
+              </div>
+
+              <div class="input-row">
+                <input
+                  type="text"
+                  id="excludeInput"
+                  class="input"
+                  placeholder="Add pattern, e.g. *.log or build"
+                  aria-label="Add exclusion pattern"
+                />
+                <button type="button" class="btn btn-sm" id="addExcludeBtn">Add</button>
+              </div>
+
+              <div class="tag-list" id="excludeTags"></div>
+              <div class="exclude-info" id="excludeInfo"></div>
+
+              <div class="settings-grid">
+                <div class="row-inline">
+                  <label for="maxFileSize" class="row-label">Max file size</label>
+                  <select id="maxFileSize" class="select" aria-label="Maximum file size">
+                    <option value="0">No limit</option>
+                    <option value="51200">50 KB</option>
+                    <option value="102400">100 KB</option>
+                    <option value="524288" selected>512 KB</option>
+                    <option value="1048576">1 MB</option>
+                    <option value="5242880">5 MB</option>
+                    <option value="10485760">10 MB</option>
+                  </select>
+                </div>
+                <label class="toggle-label protect-toggle">
+                  <input type="checkbox" id="redactSecrets" checked />
+                  <span>Mask likely secrets in output</span>
+                  <span class="help-dot" title="This is an additional safeguard, not a replacement for reviewing the output.">?</span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="stats-row hidden" id="stats" aria-label="File statistics">
+            <div class="stat-card"><span class="stat-value" id="totalFiles">0</span><span class="stat-label">Included</span></div>
+            <div class="stat-card"><span class="stat-value" id="selectedFiles">0</span><span class="stat-label">Selected</span></div>
+            <div class="stat-card"><span class="stat-value" id="totalSize">0 B</span><span class="stat-label">Selected size</span></div>
+            <div class="stat-card"><span class="stat-value" id="excludedCount">0</span><span class="stat-label">Skipped</span></div>
+          </section>
+
+          <section class="panel hidden" id="languageBreakdown" aria-labelledby="languageTitle">
+            <button type="button" class="panel-header" id="langPanelHeader" aria-expanded="true" aria-controls="langPanelBody">
+              <span class="panel-title" id="languageTitle">Language breakdown</span>
+              <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
+            </button>
+            <div class="panel-body" id="langPanelBody"><div id="languageBars"></div></div>
+          </section>
+
+          <div class="search-wrap hidden" id="searchWrapper">
+            <div class="search-inner">
+              <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+              <input type="search" id="searchInput" class="search-input" placeholder="Search files… (⌘/Ctrl + K)" aria-label="Search files" autocomplete="off" />
+              <button type="button" class="search-clear hidden" id="searchClear" aria-label="Clear search">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+              </button>
+            </div>
+          </div>
+
+          <section class="panel file-panel hidden" id="fileList" aria-labelledby="fileListTitle">
+            <div class="file-panel-header">
+              <span class="panel-title" id="fileListTitle">Files</span>
+              <div class="file-toolbar">
+                <div class="btn-group" role="group" aria-label="Selection actions">
+                  <button type="button" class="btn btn-xs" id="selectAllBtn">All visible</button>
+                  <button type="button" class="btn btn-xs" id="selectNoneBtn">None visible</button>
+                  <button type="button" class="btn btn-xs" id="selectCodeBtn">Code only</button>
+                </div>
+                <div class="btn-group filter-group" role="group" aria-label="Filter files">
+                  <button type="button" class="btn btn-xs chip-active" data-filter="all">All</button>
+                  <button type="button" class="btn btn-xs" data-filter="components">Components</button>
+                  <button type="button" class="btn btn-xs" data-filter="styles">Styles</button>
+                  <button type="button" class="btn btn-xs" data-filter="config">Config</button>
+                </div>
+                <label class="sort-control">Sort <select id="sortFiles" class="select select-sm"><option value="path">Path A–Z</option><option value="size">Largest first</option><option value="type">File type</option></select></label>
+              </div>
+            </div>
+            <ul class="file-list-body" id="fileItems">
+              <li class="empty-state hidden" id="fileEmptyState">No files match your current search or filter.</li>
+            </ul>
+          </section>
+
+          <div class="action-bar hidden" id="actionControls">
+            <div class="action-bar-primary">
+              <button type="button" class="btn btn-primary" id="combineBtn">Create output</button>
+              <label class="toggle-label"><input type="checkbox" id="useCodeBlocks" checked /> Code fences</label>
+              <label class="toggle-label"><input type="checkbox" id="includeTree" /> File tree</label>
+              <button type="button" class="btn btn-ghost btn-sm" id="minifyBtn" title="Safely removes only excess blank lines and trailing whitespace.">Compact: <span id="minifyState">Off</span></button>
+              <label class="format-control">Format <select id="outputFormat" class="select select-sm"><option value="markdown">Markdown</option><option value="xml">XML</option><option value="text">Plain text</option></select></label>
+            </div>
+            <div class="action-bar-secondary">
+              <button type="button" class="btn btn-ghost btn-sm" id="fitBudgetBtn">Fit selection to budget</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="promptTemplateBtn">AI prompt</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="projectContextBtn">Project brief</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="pastePathsBtn">Paste paths</button>
+              <button type="button" class="btn btn-ghost btn-sm danger-hover" id="resetBtn">Reset</button>
+              <span class="shortcut-hint">⌘/Ctrl + Enter to create output</span>
+            </div>
+          </div>
+
+          <section class="panel hidden" id="outputSection" aria-labelledby="outputTitle">
+            <div class="output-header">
+              <div>
+                <span class="panel-title" id="outputTitle">Generated output</span>
+                <span class="output-subtitle">Review before sharing with an AI service.</span>
+              </div>
+              <div class="output-header-right">
+                <select id="tokenLimitSelect" class="select select-sm" aria-label="AI context token budget">
+                  <option value="0">No token budget</option>
+                  <option value="8192">8K context</option>
+                  <option value="16384">16K context</option>
+                  <option value="32768">32K context</option>
+                  <option value="128000" selected>128K context</option>
+                  <option value="200000">200K context</option>
+                  <option value="1000000">1M context</option>
+                </select>
+                <button type="button" class="btn btn-sm" id="copyBtn">Copy</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="downloadMdBtn">Download</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="customPromptBtn">+ Prompt</button>
+              </div>
+            </div>
+
+            <div class="secret-scan-info hidden" id="secretScanInfo" role="status"></div>
+            <textarea class="output-textarea" id="outputTextarea" placeholder="Your combined output will appear here…" aria-label="Combined output" spellcheck="false"></textarea>
+
+            <div id="tokenCounter" class="token-counter hidden">
+              <div class="token-row">
+                <span id="tokenCount" class="token-count">0</span>
+                <span class="token-sep">/ <span id="tokenLimit">128,000</span> estimated tokens</span>
+                <div class="token-bar-wrap" aria-hidden="true"><div class="token-bar-track"><div class="token-bar-fill" id="tokenProgress"></div></div></div>
+              </div>
+              <p class="token-warning hidden" id="tokenWarning">This output exceeds the selected budget. Use “Fit selection to budget” or trim it before sharing.</p>
+            </div>
+          </section>
+        </section>
+
+        <section class="benefit-grid" aria-label="Why developers use File Combiner">
+          <article><span class="benefit-icon" aria-hidden="true">◌</span><h2>Local by design</h2><p>Your selected files are read and combined in the browser. There is no file-upload workflow or account gate.</p></article>
+          <article><span class="benefit-icon" aria-hidden="true">⌁</span><h2>Context, not clutter</h2><p>Exclude generated folders, filter files, search paths, and work against a practical AI context budget.</p></article>
+          <article><span class="benefit-icon" aria-hidden="true">↗</span><h2>Ready for your workflow</h2><p>Copy or download Markdown, XML, or plain text for an AI review, hand-off, audit, or documentation task.</p></article>
+        </section>
+
+        <section class="content-section" id="how-it-works" aria-labelledby="howTitle">
+          <div class="section-intro"><p class="eyebrow">How it works</p><h2 id="howTitle">Turn a codebase into useful AI context in three steps.</h2></div>
+          <ol class="steps-list">
+            <li><span>1</span><div><h3>Select a folder or files</h3><p>Drop a project folder, browse for a directory, or choose individual text files. Nested folders dropped from supported browsers are read recursively.</p></div></li>
+            <li><span>2</span><div><h3>Keep the relevant context</h3><p>Use the Standard preset to skip dependencies, builds, locks, caches, and environment files. Search, filter, or paste paths to make a focused selection.</p></div></li>
+            <li><span>3</span><div><h3>Create and review the prompt</h3><p>Choose Markdown, XML, or plain text, inspect the estimated context size, then copy or download the result. Always review it before sharing.</p></div></li>
+          </ol>
+        </section>
+
+        <section class="content-section" id="guides" aria-labelledby="guidesTitle">
+          <div class="section-intro"><p class="eyebrow">Developer guides</p><h2 id="guidesTitle">Use AI context deliberately, not blindly.</h2></div>
+          <div class="guide-grid">
+            <a class="guide-card" href="/guides/combine-code-files-for-ai.html"><span>Workflow guide</span><h3>How to combine code files for AI</h3><p>Build a smaller, more useful project prompt without drowning a model in dependencies and generated files.</p></a>
+            <a class="guide-card" href="/guides/share-code-with-ai-safely.html"><span>Privacy checklist</span><h3>How to share code with AI safely</h3><p>Reduce accidental disclosure of secrets and sensitive context before using an external AI service.</p></a>
+          </div>
+        </section>
+
+        <section class="content-section privacy-section" id="privacy" aria-labelledby="privacyTitle">
+          <div class="section-intro"><p class="eyebrow">Privacy and safety</p><h2 id="privacyTitle">Your code stays on your device.</h2></div>
+          <div class="two-column-copy">
+            <p>File Combiner uses browser file APIs to process the files you choose. The app does not send their contents to a server, require a login, or include analytics that inspect project data. The optional offline app cache contains only this website’s static files—not your project.</p>
+            <p>Privacy tools reduce risk; they do not replace review. The Standard preset omits common <code>.env</code> files, and the optional masking step replaces likely credential values in generated output. Confirm that the final output is appropriate for the destination before pasting it into any third-party service.</p>
+          </div>
+        </section>
+
+        <section class="content-section" id="faq" aria-labelledby="faqTitle">
+          <div class="section-intro"><p class="eyebrow">FAQ</p><h2 id="faqTitle">Questions about this code file combiner.</h2></div>
+          <div class="faq-list">
+            <details><summary>Does File Combiner upload my code?</summary><p>No. It combines selected files locally in the browser. The generated result only goes where you choose to copy or download it.</p></details>
+            <details><summary>Which files can I combine?</summary><p>Text-based source files, documentation, and configuration files work well. Known binary formats are skipped so they do not pollute your prompt.</p></details>
+            <details><summary>Can I use the output with ChatGPT, Claude, Gemini, or another AI tool?</summary><p>Yes. Markdown is a good general default; XML can make file boundaries clearer for some workflows, and plain text is available when you need the smallest wrapper.</p></details>
+            <details><summary>Is the token count exact?</summary><p>No. It is a practical character-based estimate. Every model and tokenizer differs, so leave room below a provider’s actual context limit.</p></details>
+            <details><summary>Can the secret safeguard guarantee safe output?</summary><p>No. It masks several common credential shapes but cannot identify every secret or every sensitive business detail. Review the final content before sharing it.</p></details>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <span>File Combiner v3 · Private browser-based file combining</span>
+        <span class="footer-links"><a href="#guides">Guides</a><a href="#privacy">Privacy</a><a href="#faq">FAQ</a><a href="https://github.com/Manan-49/file-combiner" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+      </footer>
+    </div>
+
+    <div class="modal-overlay hidden" id="previewModal" role="dialog" aria-modal="true" aria-labelledby="previewFileName">
+      <div class="modal modal-lg">
+        <div class="modal-header"><span class="modal-title" id="previewFileName">Preview</span><button type="button" class="icon-btn" id="closePreviewBtn" aria-label="Close preview"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg></button></div>
+        <pre class="modal-code" id="previewContent"></pre>
+        <div class="notice hidden" id="previewTruncated">Preview truncated at 50,000 characters. The full text remains available when creating output.</div>
+      </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="promptModal" role="dialog" aria-modal="true" aria-labelledby="promptModalTitle">
+      <div class="modal modal-sm">
+        <div class="modal-header"><span class="modal-title" id="promptModalTitle">AI prompt templates</span><button type="button" class="icon-btn" id="closePromptBtn" aria-label="Close prompt templates"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg></button></div>
+        <p class="modal-desc">Add a focused instruction before your generated project context.</p>
+        <div class="prompt-list" id="promptButtons"></div>
+      </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="customPromptModal" role="dialog" aria-modal="true" aria-labelledby="customPromptTitle">
+      <div class="modal modal-sm">
+        <div class="modal-header"><span class="modal-title" id="customPromptTitle">Custom prompt</span><button type="button" class="icon-btn" id="closeCustomPromptBtn" aria-label="Close custom prompt"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg></button></div>
+        <p class="modal-desc">This instruction is added before the output. Use Ctrl/Cmd + Enter to apply.</p>
+        <textarea class="modal-textarea" id="customPromptInput" placeholder="e.g. Review this code for security vulnerabilities and propose a prioritized fix plan." rows="4" aria-label="Custom prompt"></textarea>
+        <div class="modal-actions"><button type="button" class="btn btn-primary btn-sm" id="applyCustomPromptBtn">Apply</button><button type="button" class="btn btn-ghost btn-sm" id="cancelCustomPromptBtn">Cancel</button></div>
+      </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="pathModal" role="dialog" aria-modal="true" aria-labelledby="pathModalTitle">
+      <div class="modal">
+        <div class="modal-header"><span class="modal-title" id="pathModalTitle">Paste file paths</span><button type="button" class="icon-btn" id="closePathBtn" aria-label="Close path selector"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /></svg></button></div>
+        <p class="modal-desc">Paste one project-relative path per line. A filename can match more than one file, so review any ambiguous matches.</p>
+        <textarea class="modal-textarea" id="pathTextarea" placeholder="src/app.ts&#10;src/components/Header.tsx&#10;package.json" rows="6" aria-label="File paths"></textarea>
+        <div class="modal-actions"><button type="button" class="btn btn-primary btn-sm" id="matchSelectBtn">Match and select</button><button type="button" class="btn btn-ghost btn-sm" id="matchAddBtn">Add to selection</button><button type="button" class="btn btn-ghost btn-sm" id="cancelPathBtn">Cancel</button></div>
+        <div class="path-results hidden" id="pathResults"></div>
+      </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="false"></div>
+    <script src="/script.js" defer></script>
+  </body>
+</html>

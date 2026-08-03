@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How to Share Code With AI Safely | File Combiner</title>
+    <meta name="description" content="A practical checklist for sharing code with AI safely: remove secrets, minimize context, and review prompts before using an external service." />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
+    <link rel="canonical" href="https://file-combiner.netlify.app/guides/share-code-with-ai-safely.html" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="File Combiner" />
+    <meta property="og:title" content="How to Share Code With AI Safely: A Practical Privacy Checklist" />
+    <meta property="og:description" content="Reduce accidental disclosure of secrets and sensitive project context before using an AI service." />
+    <meta property="og:url" content="https://file-combiner.netlify.app/guides/share-code-with-ai-safely.html" />
+    <meta property="og:image" content="https://file-combiner.netlify.app/assets/og-file-combiner.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Article",
+            "headline": "How to Share Code With AI Safely: A Practical Privacy Checklist",
+            "description": "A practical checklist for reducing accidental exposure when preparing code for an external AI service.",
+            "datePublished": "2026-08-03",
+            "dateModified": "2026-08-03",
+            "mainEntityOfPage": "https://file-combiner.netlify.app/guides/share-code-with-ai-safely.html",
+            "image": "https://file-combiner.netlify.app/assets/og-file-combiner.png",
+            "author": { "@type": "Organization", "name": "File Combiner" },
+            "publisher": { "@type": "Organization", "name": "File Combiner" }
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Is it safe to paste code into an AI tool?",
+                "acceptedAnswer": { "@type": "Answer", "text": "It depends on the code, the AI provider, your organization’s policies, and the controls available in the destination. Review the exact content and approved workflow before sharing anything externally." }
+              },
+              {
+                "@type": "Question",
+                "name": "Are environment files safe to share with AI?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Usually no. Environment files can contain passwords, API keys, connection strings, and internal endpoints. Exclude them unless a sanitized example is necessary for the task." }
+              },
+              {
+                "@type": "Question",
+                "name": "Can secret scanning guarantee that code is safe to share?",
+                "acceptedAnswer": { "@type": "Answer", "text": "No. Automated checks can catch common patterns but cannot recognize every credential, internal identifier, customer record, or proprietary business detail. Human review remains necessary." }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#article">Skip to article</a>
+    <div class="guide-shell">
+      <header class="topbar" aria-label="Guide navigation">
+        <a class="brand" href="/" aria-label="File Combiner home"><span class="app-logo brand-mark" aria-hidden="true">⌘</span><span class="app-name">File Combiner</span><span class="version-chip">v3</span></a>
+        <nav class="topbar-nav" aria-label="Primary"><a href="/#combiner">Combiner</a><a href="/guides/">Guides</a><a href="/#privacy">Privacy</a></nav>
+        <div class="topbar-right"><a href="https://github.com/Manan-49/file-combiner" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="Open File Combiner on GitHub" title="GitHub repository"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" /></svg></a></div>
+      </header>
+
+      <main class="guide-main">
+        <nav class="guide-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/guides/">Guides</a><span aria-hidden="true">/</span><span>Privacy checklist</span></nav>
+        <header class="guide-hero">
+          <p class="eyebrow">Privacy checklist</p>
+          <h1>How to share code with AI safely</h1>
+          <p class="guide-dek">Local file processing is a useful first control, but safety depends on the output you choose to share and the rules that govern the destination service. Use this checklist before code leaves your environment.</p>
+          <p class="guide-meta"><time datetime="2026-08-03">Updated August 3, 2026</time> · 6 min read</p>
+        </header>
+
+        <div class="guide-layout">
+          <article class="article-body" id="article">
+            <p>AI assistants can be valuable for debugging, documentation, code review, and test design. They can also turn a small copy-and-paste action into a data-sharing decision. A source file may contain more than code: credentials, private endpoints, customer references, business logic, unpublished product details, or identifiers that are sensitive only in combination.</p>
+            <p>The safest workflow separates two questions. First, <em>what does the AI need to answer the task?</em> Second, <em>is every piece of that context approved to leave this environment?</em> If either answer is unclear, reduce the selection or use an approved internal tool instead.</p>
+
+            <h2 id="policy">1. Start with policy, not a tool</h2>
+            <p>Before preparing a prompt, check the policy that applies to your organization, client, repository, and destination AI provider. Some teams allow code only in an enterprise tenant; others prohibit external AI services for certain projects. A local-first file combiner prevents the combiner itself from receiving source files, but it does not change what happens after you paste the output somewhere else.</p>
+            <p>Know whether the destination retains prompts, uses them for model improvement, has contractual data controls, and is approved for the class of data you intend to share. If you do not know, ask the person responsible for security, privacy, or engineering governance.</p>
+
+            <div class="article-callout"><strong>Key distinction:</strong> “Processed locally” means a preparation tool does not upload files. It does not make the external service you paste into private, approved, or appropriate by itself.</div>
+
+            <h2 id="minimize">2. Minimize the selection</h2>
+            <p>Every extra file increases both exposure and confusion. Select only the code that is needed to solve the task: the affected route or component, the direct dependency, the data types or interface, and the relevant test. A small project tree can explain structure without adding a large number of source files.</p>
+            <p>Be especially cautious with root-level documents. READMEs, deployment notes, issue templates, and configuration can contain internal domains, roadmap references, support channels, or operational details that have nothing to do with a bug. Include a sanitized excerpt when that information is genuinely needed.</p>
+
+            <h2 id="exclude">3. Exclude predictable risk</h2>
+            <p>Start with a conservative exclusion preset, then inspect its skipped-file list. The following should normally stay out of an external prompt unless you have a sanitized, approved reason to include them:</p>
+            <ul>
+              <li><strong>Environment and secret files:</strong> <code>.env</code>, <code>.env.production</code>, private keys, certificates, token files, and credential exports.</li>
+              <li><strong>Local configuration:</strong> editor settings, local overrides, deployment credentials, and machine-specific connection settings.</li>
+              <li><strong>Data and logs:</strong> database exports, request logs, analytics extracts, error reports, recordings, and customer fixtures.</li>
+              <li><strong>Generated artifacts:</strong> build output, dependencies, caches, source maps, and compiled bundles. They add little value and can contain copied configuration or source.</li>
+              <li><strong>Private documents:</strong> contracts, incident reports, architecture plans, roadmap notes, and team discussions.</li>
+            </ul>
+            <p>Do not assume that a filename is enough. A credential can appear in a test fixture, a hard-coded development fallback, a shell script, or a README example. Paths reduce risk, but output review catches the context that path rules cannot see.</p>
+
+            <h2 id="scan">4. Use automated checks as a safety net</h2>
+            <p>A likely-secret masking option can recognize several common shapes, including private-key blocks, cloud access key prefixes, GitHub tokens, Slack tokens, JSON Web Tokens, and many explicit assignments such as <code>API_KEY=…</code>. It is useful because it runs on the generated output—the exact content you are about to copy.</p>
+            <p>That safeguard is intentionally conservative and incomplete. It can miss custom token formats, short values, unstructured credentials, customer information, internal identifiers, and sensitive logic. It can also mask a value that was only an example. Treat it as a seat belt, not as proof that the output is safe.</p>
+
+            <h2 id="review">5. Review the final output, not just the file list</h2>
+            <p>Before sending a prompt, search the combined text for terms such as <code>key</code>, <code>token</code>, <code>secret</code>, <code>password</code>, your company name, customer names, internal domains, and production hostnames. Inspect every unexpected match in context. A prompt that looks harmless in the file list may become sensitive when multiple fragments are put together.</p>
+            <p>It is also worth checking instructions embedded in source text. A comment, test fixture, or documentation example can contain language that an AI might treat as a request. Mark source material clearly and keep your actual request separate at the top of the prompt.</p>
+
+            <h2 id="sanitize">6. Sanitize rather than over-share</h2>
+            <p>If a detail is necessary to reproduce an issue but is sensitive, replace it with a realistic placeholder. Use a small example configuration with <code>DATABASE_URL=postgres://example</code> rather than a production connection string. Replace customer IDs with stable dummy values. Describe an internal endpoint’s behavior without pasting the real hostname.</p>
+            <p>For an API integration problem, the protocol, request shape, status code, error body, and a scrubbed response are often more useful to an AI than the real secret or account data. The same principle applies to stack traces: retain the relevant frames and error type, then remove filenames, paths, or values that reveal more than the task needs.</p>
+
+            <h2 id="destination">7. Use the right destination and keep a record</h2>
+            <p>When your work has an approved AI environment, use that environment rather than a personal account or a public chat. Follow its retention and access controls. If you are handling a recurring workflow, document a reusable selection and sanitization process so teammates can reproduce it without reinventing the safety review every time.</p>
+            <p>For high-risk repositories, consider a peer review of the prepared context. A second person is often better at seeing the internal name, customer reference, or project detail that the author has become accustomed to reading.</p>
+
+            <section class="guide-cta" aria-labelledby="ctaTitle">
+              <h2 id="ctaTitle">Prepare context locally first</h2>
+              <p>File Combiner lets you select, exclude, inspect, and optionally mask likely secrets before you copy anything to another service. Keep the final review in your workflow.</p>
+              <a class="btn btn-primary" href="/#combiner">Open the file combiner</a>
+            </section>
+
+            <section class="guide-faq" aria-labelledby="faqTitle">
+              <p class="eyebrow">FAQ</p>
+              <h2 id="faqTitle">Sharing code with AI safely</h2>
+              <div class="faq-list">
+                <details><summary>Is it safe to paste code into an AI tool?</summary><p>It depends on the code, the provider, the approved workflow, and your organization’s policy. Review the destination’s controls and the exact content before sharing it.</p></details>
+                <details><summary>Are environment files safe to share?</summary><p>Usually not. Environment files can hold passwords, API keys, connection strings, internal hosts, and other values that are not needed for a typical code review. Prefer a sanitized example.</p></details>
+                <details><summary>Can secret scanning guarantee safe output?</summary><p>No. Automated checks cannot recognize every credential, customer reference, internal identifier, or proprietary detail. They should support—not replace—human review.</p></details>
+              </div>
+            </section>
+          </article>
+
+          <aside class="article-toc" aria-label="Table of contents"><strong>On this page</strong><a href="#policy">Start with policy</a><a href="#minimize">Minimize selection</a><a href="#exclude">Exclude predictable risk</a><a href="#scan">Use automated checks</a><a href="#review">Review final output</a><a href="#sanitize">Sanitize details</a><a href="#destination">Choose a destination</a></aside>
+        </div>
+      </main>
+
+      <footer class="footer"><span>File Combiner · Private browser-based file combining</span><span class="footer-links"><a href="/">Combiner</a><a href="/guides/">Guides</a><a href="/#privacy">Privacy</a><a href="https://github.com/Manan-49/file-combiner" target="_blank" rel="noopener noreferrer">GitHub</a></span></footer>
+    </div>
+  </body>
+</html>

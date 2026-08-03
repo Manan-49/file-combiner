@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#111827" />
+    <title>Page not found | File Combiner</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .not-found { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+      .not-found-card { max-width: 520px; padding: 34px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--bg); text-align: center; }
+      .not-found-card h1 { margin-top: 10px; font-size: clamp(2rem, 8vw, 4rem); letter-spacing: -.06em; }
+      .not-found-card p { max-width: 370px; margin: 14px auto 22px; color: var(--text-2); line-height: 1.6; }
+    </style>
+  </head>
+  <body>
+    <main class="not-found">
+      <section class="not-found-card" aria-labelledby="notFoundTitle">
+        <p class="eyebrow">404</p>
+        <h1 id="notFoundTitle">That path is not here.</h1>
+        <p>Return to File Combiner to build a private, AI-ready project context from your local files.</p>
+        <a class="btn btn-primary" href="/">Open File Combiner</a>
+      </section>
+    </main>
+  </body>
+</html>
