@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>How to Share Code With AI Safely | File Combiner</title>
     <meta name="description" content="A practical checklist for sharing code with AI safely: remove secrets, minimize context, and review prompts before using an external service." />
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <link rel="canonical" href="https://file-combiner.netlify.app/guides/share-code-with-ai-safely.html" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta property="og:type" content="article" />
@@ -14,7 +14,11 @@
     <meta property="og:description" content="Reduce accidental disclosure of secrets and sensitive project context before using an AI service." />
     <meta property="og:url" content="https://file-combiner.netlify.app/guides/share-code-with-ai-safely.html" />
     <meta property="og:image" content="https://file-combiner.netlify.app/assets/og-file-combiner.png" />
+    <meta property="og:image:alt" content="File Combiner — reviewing code before sharing it with AI" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How to Share Code With AI Safely: A Practical Privacy Checklist" />
+    <meta name="twitter:description" content="Reduce accidental disclosure of secrets and sensitive project context before using an AI service." />
+    <meta name="twitter:image" content="https://file-combiner.netlify.app/assets/og-file-combiner.png" />
     <script src="/theme.js"></script>
     <link rel="stylesheet" href="/styles.css" />
     <script type="application/ld+json">
@@ -26,30 +30,26 @@
             "headline": "How to Share Code With AI Safely: A Practical Privacy Checklist",
             "description": "A practical checklist for reducing accidental exposure when preparing code for an external AI service.",
             "datePublished": "2026-08-03",
-            "dateModified": "2026-08-03",
+            "dateModified": "2026-08-31",
             "mainEntityOfPage": "https://file-combiner.netlify.app/guides/share-code-with-ai-safely.html",
             "image": "https://file-combiner.netlify.app/assets/og-file-combiner.png",
-            "author": { "@type": "Organization", "name": "File Combiner" },
-            "publisher": { "@type": "Organization", "name": "File Combiner" }
+            "author": {
+              "@type": "Person",
+              "name": "Manan",
+              "url": "https://github.com/Manan-49"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "File Combiner",
+              "url": "https://file-combiner.netlify.app/"
+            }
           },
           {
-            "@type": "FAQPage",
-            "mainEntity": [
-              {
-                "@type": "Question",
-                "name": "Is it safe to paste code into an AI tool?",
-                "acceptedAnswer": { "@type": "Answer", "text": "It depends on the code, the AI provider, your organization’s policies, and the controls available in the destination. Review the exact content and approved workflow before sharing anything externally." }
-              },
-              {
-                "@type": "Question",
-                "name": "Are environment files safe to share with AI?",
-                "acceptedAnswer": { "@type": "Answer", "text": "Usually no. Environment files can contain passwords, API keys, connection strings, and internal endpoints. Exclude them unless a sanitized example is necessary for the task." }
-              },
-              {
-                "@type": "Question",
-                "name": "Can secret scanning guarantee that code is safe to share?",
-                "acceptedAnswer": { "@type": "Answer", "text": "No. Automated checks can catch common patterns but cannot recognize every credential, internal identifier, customer record, or proprietary business detail. Human review remains necessary." }
-              }
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://file-combiner.netlify.app/" },
+              { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://file-combiner.netlify.app/guides/" },
+              { "@type": "ListItem", "position": 3, "name": "How to Share Code With AI Safely", "item": "https://file-combiner.netlify.app/guides/share-code-with-ai-safely.html" }
             ]
           }
         ]
@@ -71,7 +71,7 @@
           <p class="eyebrow">Privacy checklist</p>
           <h1>How to share code with AI safely</h1>
           <p class="guide-dek">Local file processing is a useful first control, but safety depends on the output you choose to share and the rules that govern the destination service. Use this checklist before code leaves your environment.</p>
-          <p class="guide-meta"><time datetime="2026-08-03">Updated August 3, 2026</time> · 6 min read</p>
+          <p class="guide-meta"><time datetime="2026-08-31">Updated August 31, 2026</time> · 6 min read</p>
         </header>
 
         <div class="guide-layout">
