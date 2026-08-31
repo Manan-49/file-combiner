@@ -1,5 +1,5 @@
 /* File Combiner offline shell. It caches only public app assets, never user files. */
-const CACHE_NAME = "file-combiner-v3-2026-08-03";
+const CACHE_NAME = "file-combiner-v3-2026-08-31";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -43,11 +43,16 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put("/index.html", clone));
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
           return response;
         })
-        .catch(async () => (await caches.match("/index.html")) || caches.match("/404.html")),
+        .catch(async () => {
+          const cached = await caches.match(event.request);
+          return cached || caches.match("/index.html") || caches.match("/404.html");
+        }),
     );
     return;
   }
