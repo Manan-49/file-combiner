@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>How to Combine Code Files for AI | File Combiner</title>
-    <meta name="description" content="Learn how to combine code files into a focused AI prompt: what to include, what to exclude, how to manage token budgets, and when to use Markdown or XML." />
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
+    <meta name="description" content="Learn how to combine code files into focused AI context: what to include, what to exclude, how to manage token budgets, and when to use Markdown or XML." />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <link rel="canonical" href="https://file-combiner.netlify.app/guides/combine-code-files-for-ai.html" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta property="og:type" content="article" />
@@ -14,7 +14,11 @@
     <meta property="og:description" content="A practical guide to building focused, AI-ready project context." />
     <meta property="og:url" content="https://file-combiner.netlify.app/guides/combine-code-files-for-ai.html" />
     <meta property="og:image" content="https://file-combiner.netlify.app/assets/og-file-combiner.png" />
+    <meta property="og:image:alt" content="File Combiner — combining a codebase into AI-ready context" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How to Combine Code Files for AI Without Losing Context" />
+    <meta name="twitter:description" content="A practical guide to building focused, AI-ready project context." />
+    <meta name="twitter:image" content="https://file-combiner.netlify.app/assets/og-file-combiner.png" />
     <script src="/theme.js"></script>
     <link rel="stylesheet" href="/styles.css" />
     <script type="application/ld+json">
@@ -26,30 +30,26 @@
             "headline": "How to Combine Code Files for AI Without Losing Context",
             "description": "A practical guide to selecting, combining, and reviewing code context for an AI workflow.",
             "datePublished": "2026-08-03",
-            "dateModified": "2026-08-03",
+            "dateModified": "2026-08-31",
             "mainEntityOfPage": "https://file-combiner.netlify.app/guides/combine-code-files-for-ai.html",
             "image": "https://file-combiner.netlify.app/assets/og-file-combiner.png",
-            "author": { "@type": "Organization", "name": "File Combiner" },
-            "publisher": { "@type": "Organization", "name": "File Combiner" }
+            "author": {
+              "@type": "Person",
+              "name": "Manan",
+              "url": "https://github.com/Manan-49"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "File Combiner",
+              "url": "https://file-combiner.netlify.app/"
+            }
           },
           {
-            "@type": "FAQPage",
-            "mainEntity": [
-              {
-                "@type": "Question",
-                "name": "Should I paste my entire codebase into an AI prompt?",
-                "acceptedAnswer": { "@type": "Answer", "text": "Usually no. Include the files that define the reported behavior and its direct dependencies, then add a file tree or a concise project brief for context." }
-              },
-              {
-                "@type": "Question",
-                "name": "Which output format is best for code context?",
-                "acceptedAnswer": { "@type": "Answer", "text": "Markdown is a strong general default. XML gives files explicit structural boundaries, while plain text has the smallest wrapper. The best choice depends on the destination workflow." }
-              },
-              {
-                "@type": "Question",
-                "name": "Is a character-based token estimate exact?",
-                "acceptedAnswer": { "@type": "Answer", "text": "No. Tokenizers vary across AI models. Use an estimate to stay comfortably below a provider limit and retain room for a prompt and response." }
-              }
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://file-combiner.netlify.app/" },
+              { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://file-combiner.netlify.app/guides/" },
+              { "@type": "ListItem", "position": 3, "name": "How to Combine Code Files for AI", "item": "https://file-combiner.netlify.app/guides/combine-code-files-for-ai.html" }
             ]
           }
         ]
@@ -71,7 +71,7 @@
           <p class="eyebrow">Workflow guide</p>
           <h1>How to combine code files for AI without losing context</h1>
           <p class="guide-dek">The best AI prompt is rarely an entire repository. It is a small, well-framed slice of the project that lets a model see the behavior, the constraints, and the files that actually matter.</p>
-          <p class="guide-meta"><time datetime="2026-08-03">Updated August 3, 2026</time> · 7 min read</p>
+          <p class="guide-meta"><time datetime="2026-08-31">Updated August 31, 2026</time> · 7 min read</p>
         </header>
 
         <div class="guide-layout">
