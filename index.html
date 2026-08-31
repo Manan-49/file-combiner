@@ -8,17 +8,13 @@
       content="Combine code files, project folders, docs, and config into one AI-ready Markdown, XML, or text prompt. Free, private, browser-based processing with no uploads."
     />
     <meta
-      name="keywords"
-      content="file combiner, code file combiner, combine code files, codebase to prompt, AI prompt generator, combine folder files, markdown file combiner"
-    />
-    <meta
       name="robots"
       content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
     />
     <meta name="theme-color" content="#111827" />
     <meta name="color-scheme" content="light dark" />
 
-    <title>Free Code File Combiner for AI Prompts | Private &amp; Local</title>
+    <title>Free Code File Combiner for AI Prompts | File Combiner</title>
     <link rel="canonical" href="https://file-combiner.netlify.app/" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -74,7 +70,7 @@
             "description": "A private, browser-based tool for combining code files into AI-ready prompts."
           },
           {
-            "@type": "SoftwareApplication",
+            "@type": ["SoftwareApplication", "WebApplication"],
             "@id": "https://file-combiner.netlify.app/#app",
             "name": "File Combiner",
             "applicationCategory": "DeveloperApplication",
@@ -97,44 +93,6 @@
               "Optional likely-secret redaction"
             ],
             "sameAs": ["https://github.com/Manan-49/file-combiner"]
-          },
-          {
-            "@type": "FAQPage",
-            "@id": "https://file-combiner.netlify.app/#faq",
-            "mainEntity": [
-              {
-                "@type": "Question",
-                "name": "Does File Combiner upload my code?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "No. File Combiner reads selected files in your browser and creates the output locally. It has no code-upload endpoint or account requirement."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "What can I combine with File Combiner?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "You can combine text-based source files, documentation, and configuration files from a folder or a multi-file selection. Known binary files are skipped."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Can I use the output with ChatGPT, Claude, or Gemini?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Yes. Choose Markdown, XML, or plain-text output, review the generated context and token estimate, then copy or download it for an AI workflow."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "How does secret protection work?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "The standard exclusion preset omits common environment files. The optional output safeguard masks likely credential values in generated output, but you should always review content before sharing it."
-                }
-              }
-            ]
           }
         ]
       }
