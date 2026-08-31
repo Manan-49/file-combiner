@@ -2,26 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://file-combiner.netlify.app/</loc>
-    <lastmod>2026-08-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-08-31</lastmod>
   </url>
   <url>
     <loc>https://file-combiner.netlify.app/guides/</loc>
-    <lastmod>2026-08-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-08-31</lastmod>
   </url>
   <url>
     <loc>https://file-combiner.netlify.app/guides/combine-code-files-for-ai.html</loc>
-    <lastmod>2026-08-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-08-31</lastmod>
   </url>
   <url>
     <loc>https://file-combiner.netlify.app/guides/share-code-with-ai-safely.html</loc>
-    <lastmod>2026-08-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-08-31</lastmod>
   </url>
 </urlset>
